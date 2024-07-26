@@ -524,8 +524,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 10px;
     border: 1px solid rgb(255, 255, 255);
     box-shadow: rgba(162, 160, 160, 0.2) 0px 2px 8px 0px;
-    /* background-image: url(https://photo-resize-zmp3.zmdcdn.me/w600_r1x1_jpeg/cover/1/0/6/1/1061db36adbc2ce56d0a62fa215301bd.jpg); */
-    background-size: cover;
+    background-size: 100% 90%;
 }
 .body-add-image-music .icon-upload{
     height: 100%;
@@ -597,11 +596,33 @@ background-color: transparent;
     min-width: 120px;
     min-height: 21px;
 }
+.loading-music .dropdown{
+    width: 25%;
+    min-height: 30px;
+    margin-left: 20px;
+
+}
+.loading-music .dropdown button{
+    display: none;
+}
 .loading-music .media-content .song-title-item span::before,
 .loading-music .media-content .song-title-item span::after,
 .loading-music .media-content h3::before,
-.loading-music .media-content h3::after{
+.loading-music .media-content h3::after
+.loading-music .dropdown::before
+.loading-music .dropdown::after{
     border-radius: 0.15rem;
+}
+.loading-music .dropdown::before{
+    background-color: #e2e5e7;
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 .loading-music .song-thumd::before,
 .loading-music .media-content .song-title-item span::before,
@@ -616,6 +637,20 @@ background-color: transparent;
     right: 0;
     bottom: 0;
     
+}
+.loading-music .dropdown::after{
+    content: '';
+    /* width:100%; */
+    /* height: 100%; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, rgb(234, 227, 227), #f1f1f1 60%, rgb(235, 233, 233));
+    background-position: 100% 0%;
+    background-size: 200%;
+    animation: skeletonloading 2s linear infinite;
 }
 .loading-music .song-thumd::after,
 .loading-music .media-content .song-title-item span::after,
@@ -637,4 +672,105 @@ background-color: transparent;
     100%{
         background-position: -100% 0%;
     }
+}
+
+/* loading */
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    z-index: 9999;
+}
+.loading-hidden{
+    display: none;
+}
+.loading::after {
+    content: "";
+    width: 55px;
+    height: 55px;
+    padding: 4px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #646060;
+    --_m:
+        conic-gradient(#0000 10%, #000),
+        linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+    mask: var(--_m);
+    -webkit-mask-composite: source-out;
+    mask-composite: subtract;
+    animation: loading 1s infinite linear;
+}
+@keyframes loading {to{transform: rotate(1turn)}}
+
+/*  */
+.choise-genre-music {
+    border: 1px solid rgb(204, 199, 199);
+    padding: 4px 25px;
+    border-radius: 999px;
+    color: var(--navigation-text);
+    background-color: transparent;
+}
+
+.zm-narbar-container {
+    border-bottom: 1px solid hsla(0deg 0% 0% / 10%);
+}
+
+.zm-navbar-wrap .zm-navbar-item.is-active {
+    color: var(--text-item-hover);
+    border-bottom: 2px solid #a13bb6;
+}
+
+.zm-navbar-wrap .zm-navbar-item .navbar-link a{
+    display: block;
+    padding: 15px 0;
+}
+
+.zm-navbar-wrap .zm-navbar-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    position: relative;
+    color: var(--navigation-text);
+    margin: 0 20px;
+    line-height: normal;
+
+}
+
+.zm-navbar-wrap {
+
+    margin-bottom: 18px !important;
+}
+
+.zm-navbar-wrap .zm-narbar-container {
+    display: flex;
+    align-items: center;
+    min-height: 32px;                     
+}
+
+.zm-navbar-wrap .zm-navbar-menu {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: -1px;
+}
+
+.zm-navbar-wrap .zm-navbar-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    position: relative;
+    color: var(--navigation-text);
+    margin: 0 20px;
+    line-height: normal;
 }

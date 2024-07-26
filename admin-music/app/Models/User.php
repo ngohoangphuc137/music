@@ -46,4 +46,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function isAdmin()
+    {
+        return $this->type === self::TYPE_ADMIN;
+    }
+
+    // Mối quan hệ với bảng Artist thông qua bảng follows
+    public function followedArtists()
+    {
+        return $this->belongsToMany(Artist::class, 'follows', 'user_id', 'artist_id');
+    }
+
 }
