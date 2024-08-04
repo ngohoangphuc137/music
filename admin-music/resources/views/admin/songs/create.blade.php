@@ -96,14 +96,12 @@ Bài hát
                                                     <option value="none" selected>Mời chọn thể loại nhạc
                                                     </option>
                                                     @foreach ($musicGenre as $item)
-                                                    <optgroup label="{{ $item->name_genre }}">
-                                                        @foreach ($item->children as $children)
-                                                        <option value="{{ $children->id }}"
+                                                
+                                                        <option value="{{ $item->id }}"
                                                             {{ old('music_genre_id') == $item->id ? 'selected' : '' }}>
-                                                            {{ $children->name_genre }}
+                                                            {{ str_repeat('-',$item->depth*2).$item->name_genre }}
                                                         </option>
-                                                        @endforeach
-                                                    </optgroup>
+                                                    
                                                     @endforeach
                                                 </select>
                                                 @error('music_genre_id')

@@ -17,8 +17,8 @@ return new class extends Migration
         Schema::create('songs', function (Blueprint $table) {
             $table->id()->index();
             $table->foreignIdFor(MusicGenre::class)->index()->constrained();
+            $table->foreignIdFor(Album::class)->nullable()->constrained();
             $table->string('name')->nullable();
-            $table->string('link')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('alias')->nullable();
             $table->string('duration')->nullable()->comment('thời lượng bài hát');

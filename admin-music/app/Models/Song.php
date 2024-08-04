@@ -12,6 +12,7 @@ class Song extends Model
     protected $fillable = [
         'music_genre_id',
         'album_id',
+        'album_id',
         'name',
         'link',
         'thumbnail',
@@ -28,19 +29,26 @@ class Song extends Model
     protected $casts = [
         'isOffical' => 'boolean',
         'isPrivate' => 'boolean',
-        'isAlbum' => 'boolean',
     ];
     public function artist()
     {
-        return $this->belongsToMany(Artist::class, 'song_composers', 'song_id', 'artist_id');
+        return $this->belongsToMany(Artist::class, 'song_implementers', 'song_id', 'artist_id');
     }
     public function song_composers()
     {
-        return $this->belongsToMany(Artist::class, 'song_implementers', 'song_id', 'artist_id');
+        return $this->belongsToMany(Artist::class, 'song_composers', 'song_id', 'artist_id');
     }
     public function music_genre()
     {
         return $this->belongsTo(MusicGenre::class);
     }
-   
+    public function album()
+    {
+        return $this->belongsTo(Album::class,'album_id');
+    }
+    public function albumSong()
+    {
+        return $this->hasMany(AlbumSong::class);
+    }
+    
 }

@@ -23,7 +23,7 @@ Nghệ sĩ
                     <div class="channel-section">
                         <div class="d-flex align-items-center justify-content-between flex-wrap">
                             <div class="genre-select ps-4">
-                               
+                                <div id="table-songs_filter" class="text-end pe-2"><label><input type="search" class="form-control form-control-sm border" id="searchData" placeholder="Tìm kiếm album" aria-controls="table-songs"></label></div>
                             </div>
                             <div class="add-singer pe-4">
                                 <a href="{{ route('artists.create') }}">
@@ -51,14 +51,13 @@ Nghệ sĩ
                             </tr>
                         </thead>
                         <tbody class="tbody-artist">
-                              @foreach ($artists as $item)
-                              
+                            @foreach ($artists as $item)
+
                             <tr>
                                 <td>
                                     <div class="d-flex px-2 py-1">
                                         <div>
-                                            <img src="{{ Storage::url($item->thumbnail) }}"
-                                                class="avatar avatar-sm-1 me-3 border-radius-lg" alt="user2">
+                                            <img src="{{ Storage::url($item->thumbnail) }}" class="avatar avatar-sm-1 me-3 border-radius-lg" alt="user2">
                                         </div>
                                         <div class="d-flex flex-column justify-content-center">
                                             <h6 class="mb-0 text-sm">{{ $item->name }}</h6>
@@ -67,23 +66,20 @@ Nghệ sĩ
                                     </div>
                                 </td>
                                 <td>
-                                <p class="text-md ps-3 font-weight-normal text-secondary mb-0">{{ $item->country->name }}</p>
+                                    <p class="text-md ps-3 font-weight-normal text-secondary mb-0">{{ $item->country->name }}</p>
                                 </td>
                                 <td>
 
-                                <p class="text-md ps-3 font-weight-normal text-secondary mb-0">{{ $item->sex }}</p>
+                                    <p class="text-md ps-3 font-weight-normal text-secondary mb-0">{{ $item->sex }}</p>
                                 </td>
                                 <td class="text-sm">
-                                <p class="text-md ps-3 text-secondary mb-0">0</p>
+                                    <p class="text-md ps-3 text-secondary mb-0">0</p>
                                 </td>
-              
+
                                 <td class="align-middle">
                                     <div class="ms-auto">
-                                        <a class="btn btn-link text-danger text-gradient px-1 mb-0"
-                                            href="{{ route('artists.destroy',$item->id) }}"><i
-                                                class="material-icons text-sm me-2">delete</i>Delete</a>
-                                        <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('artists.edit',$item->id) }}"><i
-                                                class="material-icons text-sm me-2">edit</i>Edit</a>
+                                        <a class="btn btn-link text-danger text-gradient px-1 mb-0" href="{{ route('artists.destroy',$item->id) }}"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                        <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('artists.edit',$item->id) }}"><i class="material-icons text-sm me-2">edit</i>Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -102,12 +98,14 @@ Nghệ sĩ
 @section('artists')
 <script>
     $(document).ready(async function() {
-        let artists = $("#artists").DataTable({
+        let tableArtists = $("#artists").DataTable({
             responsive: true,
             lengthChange: false,
             autoWidth: false,
         })
-
+        $('#searchData').on('keyup', function() {
+            tableArtists.search($(this).val()).draw();
+        })
     })
 </script>
 @endsection

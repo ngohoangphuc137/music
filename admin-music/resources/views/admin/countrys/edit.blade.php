@@ -37,7 +37,7 @@ Quốc gia
                                                 <div
                                                     class="input-group input-group-static container-add-image-music container-fluid">
                                                     <div class="container-fluid body-add-image-music thumbnail-country my-3"
-                                                        style="background-image: url({{ asset('storage/'.$url) }});">
+                                                        style="background-image: url({{ asset('storage/' . $url) }});">
                                                         <input type="file" hidden name="thumbnail" id="cover-image">
                                                         <div class="icon-upload">
                                                             @if ($url == "")

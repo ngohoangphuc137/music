@@ -23,5 +23,8 @@ class MusicGenre extends Model
     {
         return $this->hasMany(Artist::class);
     }
+    public function album(){
+        return $this->belongsToMany(Album::class,'album_genres','music_genre_id','album_id');
+    }
 
 }

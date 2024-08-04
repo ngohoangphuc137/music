@@ -12,14 +12,13 @@
         $('#searchData').on('keyup', function() {
             dataTable.search($(this).val()).draw();
         })
-        // all_song =all_song.data
 
         getGenre(id_genre)
 
         let dataTable = $("#table-songs").DataTable({
             responsive: true,
             search: false,
-            ordering: true, // Cho phép sắp xếp khi click vào cột
+            ordering: true,
             order: [],
             lengthChange: false,
             autoWidth: false,
@@ -36,7 +35,7 @@
                     render: function(data) {
                         return (`
                            <div class="d-flex px-2 py-1">
-                                        <div class="song-thumb" title="Để ý">
+                                        <div class="song-thumb" title="${data.name}">
                                             <img src="${data.thumbnail}"
                                                 width="50px" height="50px" class="me-3 border-radius-lg" alt="user1" />
                                             <div class="zm-actions-container">
@@ -110,7 +109,7 @@
         });
 
         function getGenre($id) {
-            $('.music-content').addClass('loading-music')
+            //$('.music-content').addClass('loading-music')
             $.ajax({
                 url: `{{ url('song/genre/id').'/' }}${$id}`,
                 method: 'get',
@@ -128,7 +127,7 @@
                      `)
                     })
                     $('.menu-genre').html(listGenreChilds);
-                    $('.music-content').removeClass('loading-music')
+                   // $('.music-content').removeClass('loading-music')
                 },
                 error: function(error) {
                     console.log(error.statusText);
@@ -138,12 +137,14 @@
 
         async function getSongs(id) {
             try {
+                $('.music-content').addClass('loading-music')
                 let data = await new Promise((resolve, reject) => {
                     $.ajax({
                         method: 'get',
                         url: `{{ url('song/id').'/' }}${id}`,
                         success: function(data) {
                             resolve(data);
+                            $('.music-content').removeClass('loading-music')
                         },
                         error: function(error) {
                             reject(error.statusText);
@@ -196,6 +197,7 @@
             const id = $(this).attr('data-delete');
             $('.loading').removeClass('loading-hidden')
             index_music = 0
+            pauseSong()
             $.ajax({
                 url: `{{ url('song').'/' }}${id}/destroy`,
                 method: 'delete',
@@ -223,7 +225,12 @@
 
         function load_music(index_music) {
 
-            all_song == '' ? $('.container-music').hide() : $('.container-music').show();
+            if (all_song.length == 0) {
+                $('.container-music').hide()
+                return
+            }else{
+                $('.container-music').show();
+            }
 
             $('.current-time-music').html('0:00');
 
@@ -289,7 +296,7 @@
             load_music(currentMusic)
         }
         //
-        $('.tbody-songs').on('click', '.tr-music',function() {
+        $('.tbody-songs').on('click', '.tr-music', function() {
             var currentTr = $(this);
             var idSong = currentTr.attr('id');
             const action_play = $(this).find('.action-play i');

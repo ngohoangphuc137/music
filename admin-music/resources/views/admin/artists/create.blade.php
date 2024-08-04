@@ -40,7 +40,7 @@ Nghệ sĩ
                                                 <label style="width:100%;">Tên thật</label><br>
                                                 <input id="realname" type="name"
                                                     class="form-control  @error('realname') is-invalid @enderror"
-                                                    name="realname" value="{{ old('realname') }}" required autocomplete="realname">
+                                                    name="realname" value="{{ old('realname') }}"  autocomplete="realname">
                                             </div>
                                         </div>
 

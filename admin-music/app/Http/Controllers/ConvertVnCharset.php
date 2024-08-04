@@ -29,6 +29,8 @@ class ConvertVnCharset extends Controller
         $convert=preg_replace('/\Đ/','D',$convert);
         $convert=preg_replace('/\đ/','d',$convert);
 
+        $convert=preg_replace('/\(||%|$|@|&/','',$convert);
+        $convert=preg_replace('/\)/','',$convert);
         $convert=preg_replace('/\.|;|,/','-',$convert);
         $convert=preg_replace('/\ /','-',$convert);
         return $convert;

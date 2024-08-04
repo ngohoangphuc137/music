@@ -24,10 +24,10 @@ class SongRequest extends FormRequest
     {
         return [
             "name" => "required",
-            // "thumbnail" => "required|mimes:jpeg,png,gif",
-            // "audio_file" => "required|mimes:mp3",
-            // "artits" => "required",
-            // "music_genre_id" => "required",
+            "thumbnail" => "required|mimes:jpeg,png,gif",
+            "audio_file" => "required|mimes:mp3",
+            "artits" => "required",
+            "music_genre_id" => "required",
         ];
     }
 

@@ -26,7 +26,7 @@ Bài hát
                             <div class="row">
                                 <div class="col-md-12 mb-md-0">
                                     <div class="input-group input-group-outline">
-                                        <label class="form-label">Tên bài hát</label>
+                                        <label class="exampleFormControlSelect1" style="width:100%" class="ms-0">Tên bài hát</label>
                                         <input type="text" name="name" value="{{ $song->name }}" required class="form-control">
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@ Bài hát
                                                     hiện</label>
                                                 <select class="js-example-basic-single form-control" name="artits[]" multiple="multiple" required>
                                                     @foreach ($artists as $key=>$value)
-                                                    <option value="{{ $value->id }}" @if (isset($value->songComposers[0]))
+                                                    <option value="{{ $value->id }}" @if (isset($value->songImplementers[0]))
                                                         selected
                                                         @endif
                                                         >{{ $value->name }}</option>
@@ -69,11 +69,10 @@ Bài hát
                                             <div class="input-group input-group-static">
                                                 <label for="exampleFormControlSelect1" class="ms-0 pt-3 pb-1">Nghệ sĩ
                                                     sáng tác bài hát</label>
-                                                <select class="js-example-basic-song-creators form-control" name="song_composers[]" multiple="multiple" required>
-                                                    hát</option>
+                                                <select class="js-example-basic-song-creators form-control" name="songComposers[]" multiple="multiple" required>
                                                     @foreach ($artists as $item)
                                       
-                                                    <option value="{{ $item->id }}" @if (isset($item->songImplementers[0]))
+                                                    <option value="{{ $item->id }}" @if (isset($item->songComposers[0]))
                                                         selected
                                                         @endif
                                                         >
@@ -129,7 +128,28 @@ Bài hát
                                         <input class="form-check-input" name="isPrivate" value="1" {{ $song->isPrivate == true ?'checked':'' }} {{ old('isPrivate')  ? 'checked': '' }} type="checkbox" id="flexSwitchCheckDefault">
                                     </div>
                                 </div>
-
+                                <div class="col-md-12">
+                                            <div class="input-group input-group-static mb-4">
+                                                <label for="exampleFormControlSelect1" class="ms-0 pt-3 pb-1">Thuộc album</label>
+                                                <select class="js-example-basic-genre form-control"
+                                                    name="album_id" required>
+                                                    <option value="none" selected>Mời chọn album</option>
+                                                   @foreach ($album as $item)
+                                                   <option value="{{ $item->id }}"
+                                                   @if ($song->album_id == $item->id)
+                                                   selected
+                                                   @endif
+                                                   >{{ $item->title }}</option>
+                                                   @endforeach
+                                                    
+                                                </select>
+                                                @error('album_id')
+                                                <span class="invalid-feedback" style="display:block;" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                                @enderror
+                                            </div>
+                                        </div>
 
                                 <div class="col-md-12">
                                     <div class="input-group input-group-static mb-2 col-md-6">

@@ -7,6 +7,8 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\MusicGenreController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\SongController;
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\PlaylistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,5 +71,26 @@ Route::group(['middleware'=>'isAdmin'],function(){
     Route::get('song/genre/id/{id}',                  [SongController::class,'apiGenre'])->name('songs.apiGenre');
     Route::post('song/updata/{id}',                   [SongController::class,'update'])->name('songs.updata');
     Route::delete('song/{id}/destroy',                [SongController::class,'destroy'])->name('songs.destroy');
+
+    // route table album
+    //is album
+    Route::get('album',                               [AlbumController::class,'index'])->name('albums.index');
+    Route::get('album/create',                        [AlbumController::class,'create'])->name('albums.create');
+    Route::post('album/store/{isAlbum?}',             [AlbumController::class,'store'])->name('albums.store');
+    Route::get('album/destroy/{id}',                  [AlbumController::class,'destroy'])->name('albums.destroy');
+    Route::get('album/addMusicToAlbum/{id}',          [AlbumController::class,'addMusicToAlbum'])->name('albums.addMusicToAlbum');
+    Route::get('get/album/{id}',                      [AlbumController::class,'apiMusicWithoutAlbum'])->name('albums.apiMusicWithoutAlbum');
+    Route::get('album/viewAlbum/{id}',                [AlbumController::class,'viewAlbum'])->name('albums.viewAlbum');
+    Route::get('album/addSongAlbum/{id}',             [AlbumController::class,'addSongAlbum'])->name('albums.addSongAlbum');
+    Route::get('album/edit/{id}',                     [AlbumController::class,'edit'])->name('albums.edit');
+    Route::post('album/update/{id}',                  [AlbumController::class,'update'])->name('albums.update');
+    // is not album
+    Route::get('playlist',                            [PlaylistController::class,'playList'])->name('playlist.index');
+    Route::get('playlist/create',                     [PlaylistController::class,'createPlayList'])->name('playlist.createPlayList');
+    Route::get('playList/viewPlayList/{id}',          [PlaylistController::class,'viewPlayList'])->name('playlist.viewPlayList');
+    Route::get('playList/addSongPlayList/{id}',       [PlaylistController::class,'addSongPlayList'])->name('playlist.addSongPlayList');
+    Route::get('getSongs/genre/{genre}/album/{id}',   [PlaylistController::class,'song'])->name('playlist.song');
+    Route::post('playlist/store/{id}',                [PlaylistController::class,'store'])->name('playlist.store');
+    Route::get('playlist/destroy/{id}/album/{album}', [PlaylistController::class,'destroy'])->name('playlist.destroy');
 
 });

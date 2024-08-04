@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AstistRequest extends FormRequest
+class AlbumRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,10 @@ class AstistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "thumbnail" => "mimes:jpeg,png,gif,pdf",
-            "name" => "required",
-            "country_id" => "required",
+            'title'=>'required',
+            'thumbnail'=>'mimes:jpeg,png,gif,pdf',
+            'artists'=>'required',
+            'genre'=>'required',
         ];
     }
 }

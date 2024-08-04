@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use App\Jobs\UploadMp3ToS3;
 use App\Http\Resources\SongsResource;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Artist;
 use App\Models\MusicGenre;
@@ -20,9 +21,6 @@ use App\Models\AlbumArtist;
 use App\Models\AlbumGenre;
 use App\Models\AlbumSong;
 use App\Http\Controllers\ConvertVnCharset;
-
-use Aws\S3\S3Client;
-use Aws\Exception\AwsException;
 
 use getID3;
 
@@ -115,12 +113,12 @@ class SongController extends Controller
         $artists = Artist::query()->select(['id', 'name'])->get();
 
         $musicGenre = MusicGenre::withDepth()
-            ->with('children')
-            ->where('parent_id', '=', null)
+            ->withDepth()
             ->get()
             ->toFlatTree();
+      
 
-        $album = Album::query()->select(['id', 'title'])->get();
+        $album = Album::query()->select(['id', 'title'])->where('isAlbum', true)->get();
 
         return view(self::PATH_VIEW . 'create', compact(['artists', 'musicGenre', 'album']));
     }
@@ -173,14 +171,15 @@ class SongController extends Controller
             $data['audio_file'] = 'songs/' . basename($filePath);
             UploadMp3ToS3::dispatch($audioFilePath);
         }
+        if (isset($request->album)) {
+            $data['album_id'] = $request->album;
+        }
 
         return $data;
     }
     public function createSong($data)
     {
         $song = Song::query()->create($data);
-        $song->link = self::PATH_LINK_SONG . $song->alias . '/' . $song->id;
-        $song->save();
 
         return $song;
     }
@@ -188,14 +187,14 @@ class SongController extends Controller
     {
         // thêm nghệ sĩ sáng tác
         foreach ($request->song_composers as $value) {
-            SongImplementer::query()->create([
+            SongComposer::query()->create([
                 'song_id' => $song->id,
                 'artist_id' => $value
             ]);
         }
         //Thêm nghệ sĩ thực hiện bài hát 
         foreach ($request->artits as $value) {
-            SongComposer::query()->create([
+            SongImplementer::query()->create([
                 'song_id' => $song->id,
                 'artist_id' => $value
             ]);
@@ -209,11 +208,15 @@ class SongController extends Controller
             ->ancestorsAndSelf($request->music_genre_id);
         $dataAlbum = [
             'title' => $request->name,
-            'aliasTitle' => $song->alias . $nameArtits,
+            'aliasTitle' => $song->alias .'-'. $nameArtits,
+            'user_id' => Auth::user()->id,
+            'isAlbum' => 1,
             'thumbnail' => $request->hasFile('thumbnail') ? Storage::put(self::PATH_UPLOAD_ALBUM, $request->file('thumbnail')) : null,
         ];
 
         $album = Album::query()->create($dataAlbum);
+        $song->album_id = $album->id;
+        $song->save();
 
         foreach ($request->artits as $value) {
             AlbumArtist::query()->create([
@@ -231,9 +234,6 @@ class SongController extends Controller
             'album_id' => $album->id,
             'song_id' => $song->id
         ]);
-
-        $album->link = self::PATH_LINK_ALBUM . $album->aliasTitle . '/' . $album->id;
-        $album->save();
     }
     public function chooseAlbum($request, $song)
     {
@@ -246,9 +246,10 @@ class SongController extends Controller
     {
         $nameArtits = null;
         $artits = Artist::query()->select(['alias'])->whereIn('id', $request->artits)->get();
-        foreach ($artits as $value) {
-            $nameArtits .= '-' . $value->alias;
-        }
+        // foreach ($artits as $value) {
+        //     $nameArtits .= '-' . $value->alias;
+        // }
+        $nameArtits = collect($artits)->pluck('alias')->implode('-');
         return $nameArtits;
     }
 
@@ -258,7 +259,7 @@ class SongController extends Controller
     public function edit(string $id)
     {
         $song = Song::query()
-            ->select(['id', 'music_genre_id', 'name', 'thumbnail', 'audio_file', 'release_date', 'lyrics', 'isOffical', 'isPrivate'])
+            ->select(['id', 'music_genre_id', 'name', 'thumbnail', 'audio_file', 'release_date', 'lyrics', 'album_id', 'isOffical', 'isPrivate'])
             ->with(['song_composers:id', 'artist:id'])
             ->findOrFail($id);
 
@@ -266,10 +267,10 @@ class SongController extends Controller
             ->select(['id', 'name'])
             ->with([
                 'songComposers' => function ($query) use ($id) {
-                    $query->select(['id','song_id','artist_id'])->where('song_id', $id);
+                    $query->select(['id', 'song_id', 'artist_id'])->where('song_id', $id);
                 },
-                'songImplementers'=>function ($query) use ($id) {
-                    $query->select(['id','song_id','artist_id'])->where('song_id', $id);
+                'songImplementers' => function ($query) use ($id) {
+                    $query->select(['id', 'song_id', 'artist_id'])->where('song_id', $id);
                 }
             ])
             ->get();
@@ -280,8 +281,9 @@ class SongController extends Controller
             ->get()
             ->toFlatTree();
 
-        //dd($artists->toArray());
-        return view(self::PATH_VIEW . 'edit', compact(['artists', 'musicGenre', 'song']));
+        $album = Album::query()->select(['id', 'title', 'isAlbum'])->where('isAlbum', true)->get();
+
+        return view(self::PATH_VIEW . 'edit', compact(['artists', 'musicGenre', 'song', 'album']));
     }
 
     /**
@@ -289,15 +291,107 @@ class SongController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = $request->except(['thumbnail', 'audio_file', 'song_composers']);
+        $song = Song::query()->select(['id', 'duration', 'thumbnail', 'audio_file', 'album_id'])->findOrFail($id);
+    
+
+        $data = $request->except(['thumbnail', 'audio_file', 'songComposers', 'artits', 'album_id']);
+
         $data['isOffical'] ??= 0;
         $data['isPrivate'] ??= 0;
-        $composers  = collect($request->artits)->toArray();
 
-        $song_composers = SongComposer::query()->where('song_id', $id)->get()->pluck('artist_id')->toArray();
+        $data['lyrics'] = $request->lyrics;
 
-        $a = array_diff($composers, $song_composers);
-        dd($data, $song_composers, $composers, $a);
+        $data['thumbnail'] = $song->thumbnail;
+        if ($request->hasFile('thumbnail')) {
+            $data['thumbnail'] = Storage::put(self::PATH_UPLOAD_SONG, $request->file('thumbnail'));
+        }
+        if ($request->hasFile('thumbnail') && Storage::exists($song->thumbnail)) {
+            Storage::delete($song->thumbnail);
+        }
+
+        $data['audio_file'] = $song->audio_file;
+        $data['duration'] = $song->duration;
+        if ($request->hasFile('audio_file')) {
+            $getID3 = new getID3;
+            $duratio = $getID3->analyze($request->audio_file);
+            $data['duration'] = $duratio['playtime_seconds'];
+
+            $file = $request->file('audio_file');
+            $filePath = $file->store('temp');
+            $audioFilePath = $request->file('audio_file')->store('temp', 'public');
+            $data['audio_file'] = 'songs/' . basename($filePath);
+
+            UploadMp3ToS3::dispatch($audioFilePath);
+        }
+        if($request->hasFile('audio_file') && Storage::disk('s3')->exists($song->audio_file)){
+            Storage::disk('s3')->delete($song->audio_file);
+        }
+
+        $song->update($data);
+        if ($request->album_id !== 'none') {
+            if ($song->album_id != $request->album_id) {
+                $albumSong =  AlbumSong::query()
+                    ->where('album_id', '=', $song->album_id)
+                    ->where('song_id', $song->id)->first();
+                $albumSong->album_id = $request->album_id;
+                $song->album_id = $request->album_id;
+                $song->save();
+                $albumSong->save();
+            }
+        }
+
+        $artits  = collect($request->artits)->toArray();
+        $Composer  = collect($request->songComposers)->toArray();
+
+        $song_Implementer = SongImplementer::query()->where('song_id', $id)->get()->pluck('artist_id')->toArray();
+        $song_Composer = SongComposer::query()->where('song_id', $id)->get()->pluck('artist_id')->toArray();
+
+        $this->updateImple_compos($Composer, $song_Composer, 'composer', $id);
+        $this->updateImple_compos($artits, $song_Implementer, 'Implementer', $id);
+
+        return redirect()->back()->with('success', 'Sửa thành công');
+    }
+
+    public function updateImple_compos($dataRequest, $dataTable, $table, $id_song)
+    {
+        $class = $table == 'composer' ? 'App\Models\SongComposer' : 'App\Models\SongImplementer';
+
+        $getDiffDataRequest = array_diff($dataRequest, $dataTable);
+        $getIntersect = array_intersect($dataRequest, $dataTable);
+        $getDiffDataTable = array_diff($dataTable, $dataRequest);
+        try {
+            DB::beginTransaction();
+            if ($dataTable == $getIntersect) {
+                if (!empty($getDiffDataRequest)) {
+                    foreach ($getDiffDataRequest as  $value) {
+                        $class::query()->create([
+                            'song_id' => $id_song,
+                            'artist_id' => $value
+                        ]);
+                    }
+                }
+            } else {
+                if (!empty($getDiffDataRequest)) {
+                    foreach ($getDiffDataRequest as  $value) {
+                        $class::query()->create([
+                            'song_id' => $id_song,
+                            'artist_id' => $value
+                        ]);
+                    }
+                }
+                if (!empty($getDiffDataTable)) {
+                    foreach ($getDiffDataTable as $value) {
+                        $class::query()
+                            ->where('song_id', $id_song)
+                            ->where('artist_id', $value)
+                            ->delete();
+                    }
+                }
+            }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
     }
 
     /**
