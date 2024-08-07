@@ -38,6 +38,14 @@ class Song extends Model
     {
         return $this->belongsToMany(Artist::class, 'song_composers', 'song_id', 'artist_id');
     }
+    public function song_composers_hasMany()
+    {
+        return $this->hasMany(SongComposer::class);
+    }
+    public function song_implementers_hasMany()
+    {
+        return $this->hasMany(SongImplementer::class);
+    }
     public function music_genre()
     {
         return $this->belongsTo(MusicGenre::class);

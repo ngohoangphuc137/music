@@ -95,7 +95,7 @@ Album
                                 <td class="align-middle">
                                     <div class="ms-auto">
                                         <a class="btn btn-link text-danger text-gradient px-1 mb-0" href="{{ route('albums.destroy',$item->id) }}" onclick="return confirm('Bạn có chắc muốn xoá trường này không !')"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                                        <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('albums.edit',$item->id) }}"><i class="material-icons text-sm me-2">edit</i>Edit</a>
+                                        <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('albums.edit',$item->id) }}"><i class="material-icons text-sm me-2">edit</i>Edit</a><br>
                                         <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('albums.viewAlbum',$item->id) }}"><i class="far fa-eye me-2"></i>View Alnum</a>
                                         <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('albums.addSongAlbum',$item->id) }}"><i class="material-icons text-sm me-2">add</i>add music</a>
                                     </div>

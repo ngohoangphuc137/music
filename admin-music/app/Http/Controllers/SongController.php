@@ -246,9 +246,6 @@ class SongController extends Controller
     {
         $nameArtits = null;
         $artits = Artist::query()->select(['alias'])->whereIn('id', $request->artits)->get();
-        // foreach ($artits as $value) {
-        //     $nameArtits .= '-' . $value->alias;
-        // }
         $nameArtits = collect($artits)->pluck('alias')->implode('-');
         return $nameArtits;
     }

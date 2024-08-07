@@ -37,6 +37,10 @@ class Artist extends Model
     {
         return $this->hasMany(SongComposer::class);
     }
+    public function songImplementersMany()
+    {
+        return $this->belongsToMany(Song::class,'song_implementers','artist_id','song_id');
+    }
     // mối quan hệ n-n giữa 2 bảng user,artist
     // Mối quan hệ với bảng User thông qua bảng follows
     public function followers()
@@ -45,6 +49,9 @@ class Artist extends Model
     }
     public function album(){
         return $this->belongsToMany(Album::class,'album_artists','artist_id','album_id');
+    }
+    public function albumArtists(){
+        return $this->hasMany(AlbumArtist::class);
     }
 
 }

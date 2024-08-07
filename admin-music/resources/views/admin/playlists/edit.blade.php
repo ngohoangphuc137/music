@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('titleAdmin')
-Thêm PlayList
+PlayList {{ $album->title }}
 @endsection
 @section('header')
 PlayList
@@ -16,12 +16,12 @@ PlayList
                     <div class="card-header pb-0 p-3 border-bottom">
 
                         <div class="d-flex align-items-center pb-3">
-                            <h5 class="mb-0">Thêm PlayList</h5>
+                            <h5 class="mb-0">PlayList {{ $album->title }}</h5>
                         </div>
 
                     </div>
                     <div class="card-body p-3">
-                        <form action="{{ route('playlist.createPlayList') }}" method="post" enctype=multipart/form-data>
+                        <form action="{{ route('playlist.update',$album->id) }}" method="post" enctype=multipart/form-data>
                             @csrf
                             <div class="row">
                                 <div class="col-md-12">
@@ -30,23 +30,26 @@ PlayList
                                         <div class="col-md-12">
                                             <div class="input-group input-group-outline my-3">
                                                 <label style="width:100%;">Chủ đề PlayList</label><br>
-                                                <input id="title" type="name" class="form-control  @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" required autocomplete="name">
+                                                <input id="title" type="name" class="form-control  @error('title') is-invalid @enderror" name="title" value="{{ $album->title }}" required autocomplete="name">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="input-group input-group-outline my-3">
                                                 <label style="width:100%;">Ảnh nền</label><br>
-                                                <input id="thumbnail" type="file" class="form-control" name="thumbnail" value="{{ old('thumbnail') }}" required autocomplete="thumbnail">
+                                                <input id="thumbnail" type="file" class="form-control" name="thumbnail" value="{{ old('thumbnail') }}" autocomplete="thumbnail">
                                             </div>
                                         </div>
 
                                     </div>
                                     <div class="col-md-12">
                                         <div class="input-group input-group-static mb-4">
-                                            <label for="exampleFormControlSelect1" class="ms-0 pt-3 pb-1">Thuộc thể PlayList</label>
+                                            <label for="exampleFormControlSelect1" class="ms-0 pt-3 pb-1">Thuộc thể loại</label>
                                             <select class="genre form-control" multiple="multiple" name="genre[]">
                                                 @foreach ($genre as $item)
-                                                <option value="{{ $item->id }}">{{ str_repeat('-',$item->depth*2) . $item->name_genre }}</option>
+                                                <option value="{{ $item->id }}" @if (isset($item->album[0]))
+                                                    selected
+                                                    @endif
+                                                    >{{ str_repeat('-',$item->depth*2) . $item->name_genre }}</option>
                                                 @endforeach
                                             </select>
                                             @error('genre')
@@ -56,10 +59,17 @@ PlayList
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-md-12 d-flex">
+                                        <div class="form-check form-switch">
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">Là Album</label>
+                                            <input class="form-check-input" name="isAlbum" value="1" {{ $album->isAlbum ? 'checked': '' }} type="checkbox" id="flexSwitchCheckDefault">
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-12">
                                         <div class="input-group input-group-outline my-3">
                                             <label style="width:100%;">Mô tả ngắn</label><br>
-                                            <input id="description" type="description" class="form-control" name="description" value="{{ old('description') }}" autocomplete="country_code_no">
+                                            <input id="description" type="description" class="form-control" name="description" value="{{ $album->description }}" autocomplete="country_code_no">
 
                                         </div>
                                     </div>
@@ -113,7 +123,7 @@ PlayList
 <script>
     $(document).ready(function() {
         $('.artists').select2({
-            placeholder: "Mời chọn các nghệ sĩ chính",
+            placeholder: "Mời chọn các nghệ sĩ liên quan",
         });
         $('.genre').select2({
             placeholder: "Mời chọn thể loại",

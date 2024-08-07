@@ -79,7 +79,7 @@ Quốc gia
                                     <span class="text-sm  mb-0">{{ $item->country_code_no }}</span>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <span class="text-secondary text-xs font-weight-bold">0</span>
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $item->artits_count }}</span>
                                 </td>
                                 <td class="align-middle">
                                     <div class="ms-auto">

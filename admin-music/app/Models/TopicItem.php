@@ -5,7 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Hub extends Model
+class TopicItem extends Model
 {
     use HasFactory;
+    protected $fillable=[
+        'topic_id',
+        'album_id'
+    ];
 }

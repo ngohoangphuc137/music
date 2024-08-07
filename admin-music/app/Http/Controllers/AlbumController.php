@@ -116,7 +116,7 @@ class AlbumController extends Controller
         $album = Album::query()->with([
             'albumArtists',
             'songAlbumBeLongToMany' => function ($query) {
-                $query->select('songs.id', 'songs.album_id','songs.music_genre_id', 'songs.name', 'songs.thumbnail', 'songs.duration')
+                $query->select('songs.id', 'songs.album_id', 'songs.music_genre_id', 'songs.name', 'songs.thumbnail', 'songs.duration')
                     ->with([
                         'artist:id,name',
                     ]);
@@ -247,6 +247,7 @@ class AlbumController extends Controller
             $albumArtists = AlbumArtist::query()->where('album_id', $album->id)->get();
             $albumGenre = AlbumGenre::query()->where('album_id', $album->id)->get();
             $albumSong = AlbumSong::query()->where('album_id', $album->id)->get();
+            $song = Song::query()->with(['song_composers_hasMany','song_implementers_hasMany'])->where('album_id', $album->id)->get();
 
             DB::beginTransaction();
             foreach ($albumArtists as $value) {
@@ -262,6 +263,14 @@ class AlbumController extends Controller
                     $value->delete();
                 }
             }
+            foreach ($song as $value) {
+                $this->delete_relationship_table($value->song_composers_hasMany);
+                $this->delete_relationship_table($value->song_implementers_hasMany);
+                if (Storage::exists($value->thumbnail)) {
+                    Storage::delete($value->thumbnail);
+                }
+                $value->delete();
+            }
             $album->delete();
             DB::commit();
 
@@ -272,6 +281,12 @@ class AlbumController extends Controller
         } catch (\Exception $exception) {
             DB::rollBack();
             return back()->with('error', $exception->getMessage());
+        }
+    }
+    public function delete_relationship_table($data)
+    {
+        foreach ($data as $value) {
+            $value->delete();
         }
     }
 }

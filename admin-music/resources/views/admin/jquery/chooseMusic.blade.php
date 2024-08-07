@@ -1,5 +1,6 @@
 <script>
     $(document).ready(async function() {
+        var selectedIds = [];
         let id_genre = $('.zm-navbar-item.is-active').attr('data-id');
         let songs = await getSongs(id_genre);
         let all_song = songs.data
@@ -48,6 +49,7 @@
 
             isActive($(this))
             id_genre = $(this).attr('data-id');
+            selectedIds =[];
             getGenre(id_genre);
             songs = await getSongs(id_genre);
             all_song = songs.data
@@ -56,6 +58,7 @@
         $('.menu-genre').on('click', 'li', async function() {
             const idGenre = $(this).attr('data-id');
             if (id_genre == idGenre) return
+            selectedIds =[];
             id_genre = idGenre;
             getGenre(idGenre);
             songs = await getSongs(id_genre);
@@ -122,11 +125,23 @@
             }
         }
 
+
+        $('.tbody-songs').on('change', 'input[name="idSongs"]', function() {
+            var id = $(this).val();
+            if ($(this).is(':checked')) {
+                selectedIds.push(id);
+            } else {
+                selectedIds = selectedIds.filter(function(item) {
+                    return item !== id;
+                });
+            }
+            console.log(selectedIds);
+            
+        });
+
         $('.btn-more-playlist').on('click', function() {
-            var selectedItems = $('input[name="idSongs"]:checked').map(function() {
-                return this.value;
-            }).get();
-            if (selectedItems == '') return
+            if (selectedIds == '') return
+            $('.loading').removeClass('loading-hidden')
             $.ajax({
                 url: `{{ route('playlist.store',$album->id) }}`,
                 method: 'post',
@@ -134,11 +149,13 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    'data': selectedItems
+                    'data': selectedIds
                 },
                 dataType: "json",
                 success: async function(data) {
                     if (data.status) {
+                        $('.loading').addClass('loading-hidden')
+                        $('.successToast').trigger('click')
                         getGenre(id_genre)
                         songs = await getSongs(id_genre);
                         all_song = songs.data

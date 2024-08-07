@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\MusicGenre;
 use App\Http\Requests\MusicGenreRequest;
 use App\Http\Controllers\ConvertVnCharset;
-
+use Illuminate\Support\Facades\Storage;
 
 class MusicGenreController extends Controller
 {
@@ -116,10 +116,43 @@ class MusicGenreController extends Controller
      */
     public function destroy(string $id)
     {
-        $root = MusicGenre::descendantsAndSelf($id)->toTree()->first();
+        $root = MusicGenre::with('songs')->descendantsAndSelf($id)->toTree()->first();
+
+        if (!$root->children->isEmpty()) {
+            foreach ($root->children as $value) {
+                if (!$value->songs->isEmpty()) {
+                    $this->destroySong($value->songs);
+                }
+            }
+        }
+        if (!$root->songs->isEmpty()) {
+            $this->destroySong($root->songs);
+        }
 
         $root->delete();
 
         return back();
+    }
+    public function destroySong($song)
+    {
+        foreach ($song as $value) {
+            $this->delete_relationship_table($value->song_composers_hasMany);
+            $this->delete_relationship_table($value->song_implementers_hasMany);
+            $this->delete_relationship_table($value->albumSong);
+
+            if (Storage::exists($value->thumbnail)) {
+                Storage::delete($value->thumbnail);
+            }
+            if (Storage::exists($value->audio_file)) {
+                Storage::disk('s3')->delete($value->audio_file);
+            }
+            $value->delete();
+        }
+    }
+    public function delete_relationship_table($data)
+    {
+        foreach ($data as $value) {
+            $value->delete();
+        }
     }
 }

@@ -3,12 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\MusicGenreController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\PlaylistController;
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,9 +24,9 @@ use App\Http\Controllers\PlaylistController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 // Auth::routes();
 Route::get('login',                                   [LoginController::class,'showLoginForm'])->name('login');
@@ -37,6 +40,7 @@ Route::post('register',                               [RegisterController::class
 Route::get('/home',                                   [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['middleware'=>'isAdmin'],function(){
+    Route::get('/',                                   [DashboardController::class,'index'])->name('dashboard');
     // Route table countrys
     Route::get('quoc-gia',                            [CountryController::class, 'index'])->name('countrys.index');
     Route::get('quoc-gia/create',                     [CountryController::class, 'create'])->name('countrys.create');
@@ -84,13 +88,26 @@ Route::group(['middleware'=>'isAdmin'],function(){
     Route::get('album/addSongAlbum/{id}',             [AlbumController::class,'addSongAlbum'])->name('albums.addSongAlbum');
     Route::get('album/edit/{id}',                     [AlbumController::class,'edit'])->name('albums.edit');
     Route::post('album/update/{id}',                  [AlbumController::class,'update'])->name('albums.update');
-    // is not album
+    // is  playList
     Route::get('playlist',                            [PlaylistController::class,'playList'])->name('playlist.index');
-    Route::get('playlist/create',                     [PlaylistController::class,'createPlayList'])->name('playlist.createPlayList');
+    Route::get('playlist/create',                     [PlaylistController::class,'create'])->name('playlist.create');
+    Route::post('playlist/createPlayList',            [PlaylistController::class,'createPlayList'])->name('playlist.createPlayList');
     Route::get('playList/viewPlayList/{id}',          [PlaylistController::class,'viewPlayList'])->name('playlist.viewPlayList');
     Route::get('playList/addSongPlayList/{id}',       [PlaylistController::class,'addSongPlayList'])->name('playlist.addSongPlayList');
     Route::get('getSongs/genre/{genre}/album/{id}',   [PlaylistController::class,'song'])->name('playlist.song');
     Route::post('playlist/store/{id}',                [PlaylistController::class,'store'])->name('playlist.store');
+    Route::get('playlist/edit/{id}',                  [PlaylistController::class,'edit'])->name('playlist.edit');
+    Route::post('playlist/update/{id}',               [PlaylistController::class,'update'])->name('playlist.update');
     Route::get('playlist/destroy/{id}/album/{album}', [PlaylistController::class,'destroy'])->name('playlist.destroy');
 
+    // route table topic
+    Route::get('topic',                               [TopicController::class,'index'])->name('topics.index');
+    Route::get('topic/create',                        [TopicController::class,'create'])->name('topics.create');
+    Route::post('topic/store',                        [TopicController::class,'store'])->name('topics.store');
+    Route::get('topic/edit/{id}',                     [TopicController::class,'edit'])->name('topics.edit');
+    Route::post('topic/update/{id}',                  [TopicController::class,'update'])->name('topics.update');
+    Route::get('topic/destroy/{id}',                  [TopicController::class,'destroy'])->name('topics.destroy');
+
+    // route table user
+    Route::get('user',                                [UserController::class,'index'])->name('users.index');
 });

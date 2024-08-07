@@ -26,9 +26,9 @@ class LoginController extends Controller
 
 
             if(Auth::user()->isAdmin()){
-                return redirect()->intended('/home');
+                return redirect()->intended('/');
             }
-            return redirect()->intended('/');
+            return redirect()->intended('/login');
         }
 
         return back()->withErrors([
@@ -43,7 +43,7 @@ class LoginController extends Controller
        //xoá tất cả các session
        \request()->session()->regenerate();
 
-       return redirect('/');
+       return redirect('/login');
 
     }
 }

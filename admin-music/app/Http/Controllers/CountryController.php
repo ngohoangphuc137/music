@@ -18,7 +18,7 @@ class CountryController extends Controller
     const DEFAULT_AVATAR_ARTISTS = 'default-avatar.jpg';
     public function index()
     {
-        $countries = Country::query()->get();
+        $countries = Country::query()->withCount('artits')->get();
         return view("admin.countrys.index", compact("countries"));
     }
     public function create()

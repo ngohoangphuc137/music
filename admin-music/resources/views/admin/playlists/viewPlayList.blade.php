@@ -21,15 +21,7 @@ PlayList {{ $album->title }}
                     <div class="title-media-content flex-column">
                         <h5>{{ $album->title }}</h5>
                     </div>
-                    <div class="content">
-                        <p>{{ collect($album->albumArtists)->pluck('name')->implode(', ') }}</p>
-                    </div>
-                    <!-- <div class="actions d-flex justify-content-center">
-                        <button class="btn btn-icon btn-3 px-4" type="button">
-                            <span class="btn-inner--icon"><i class="fas fa-play main-music"></i></span>
-                            <span class="btn-inner--text">Tiếp tục phát</span>
-                        </button>
-                    </div> -->
+        
 
                 </div>
             </div>

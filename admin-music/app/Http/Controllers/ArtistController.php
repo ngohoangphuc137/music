@@ -9,6 +9,8 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 
 use App\Models\MusicGenre;
 use App\Models\Country;
+use App\Models\SongComposer;
+use App\Models\SongImplementer;
 use App\Models\Artist;
 use App\Http\Controllers\ConvertVnCharset;
 use App\Http\Requests\AstistRequest;
@@ -32,9 +34,7 @@ class ArtistController extends Controller
      */
     public function index()
     {
-
-        $artists = Artist::query()->with('country')->get();
-       
+        $artists = Artist::query()->with(['country'])->get();
         return view(self::PATH_VIEW . 'index', compact('artists'));
     }
 
@@ -137,7 +137,20 @@ class ArtistController extends Controller
             $defaultAvatar = base64_encode(Storage::get(self::PATH_UPLOAD . '/' . self::DEFAULT_AVATAR));
 
             DB::transaction(function () use ($artist) {
-                foreach ($artist->hasManyFollows as $key => $value) {
+                // table follows
+                foreach ($artist->hasManyFollows as $value) {
+                    $value->delete();
+                }
+                // table songComposers
+                foreach ($artist->songComposers as $value) {
+                    $value->delete();
+                }
+                // table songImplementers
+                foreach ($artist->songImplementers as $value) {
+                    $value->delete();
+                }
+                // table albumArtists
+                foreach ($artist->albumArtists as $value) {
                     $value->delete();
                 }
 
