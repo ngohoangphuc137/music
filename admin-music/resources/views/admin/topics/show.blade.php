@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
 @section('titleAdmin')
-Topic
+{{ $topicItem->title }}
 @endsection
 @section('header')
-Topic
+{{ $topicItem->title }}
 @endsection
 
 @section('content')
@@ -23,12 +23,10 @@ Topic
                     <div class="channel-section">
                         <div class="d-flex align-items-center justify-content-between flex-wrap">
                             <div class="genre-select ps-4">
-                                <div id="table-songs_filter" class="text-end pe-2"><label><input type="search" class="form-control form-control-sm border" id="searchData" placeholder="Tìm kiếm Topic" aria-controls="table-songs"></label></div>
+                            <p><Span class="font-weight-bold" >Chủ đề:</Span>{{ $topicItem->title }}</p>
                             </div>
                             <div class="add-singer pe-4">
-                                <a href="{{ route('topics.create') }}">
-                                    <button type="button" class="btn text-end pe-4 py-2 bg-gradient-info" data-bs-toggle="modal" data-bs-target="#exampleModalSignUp"> Thêm Topic</button>
-                                </a>
+                            <div id="table-songs_filter" class="text-end pe-2"><label><input type="search" class="form-control form-control-sm border" id="searchData" placeholder="Tìm kiếm" aria-controls="table-songs"></label></div>
                             </div>
                         </div>
                     </div>
@@ -46,39 +44,44 @@ Topic
                         </button>
                     </div>
                     @endif
-                    <table class="table align-items-center mb-0" id="table-albums">
+                    <table class="table align-items-center mb-0" id="table-viewTopic">
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                     STT
                                 </th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Chủ đề
+                                    PlayLIst
                                 </th>
 
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                     Mô tả</th>
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Số lượng playList</th>
+                                    Số lượng bài hát</th>
                                 <th class="text-secondary opacity-7"></th>
                             </tr>
                         </thead>
                         <tbody>
 
-                            @foreach ($topic as $item)
-
+                       @foreach ($topicItem->topicItemAlbum as $item)
+                    
                             <tr>
                                 <td>
-                                    {{ $loop->index + 1 }}
+                                  {{ $loop->index + 1 }}
                                 </td>
                                 <td>
-                                    <p class="text-sm  mb-0">
-                                        {{ $item->title }}
-                                    </p>
+                                <div class="d-flex px-2 py-1">
+                                        <div>
+                                            <img src="{{ \Storage::url($item->thumbnail) }}" width="50px" height="50px" class="me-3 border-radius-lg" alt="user1" />
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-sm">{{ $item->title }}</h6>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="align-middle text-center text-sm">
                                     <p class="text-sm  mb-0">
-                                         @if($item->description ==null)
+                                    @if($item->description ==null)
                                           Không có mô tả
                                           @else
                                           {{ $item->description }}
@@ -86,19 +89,17 @@ Topic
                                     </p>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <span class="text-secondary text-xs font-weight-bold">{{ $item->topic_item_count }}</span>
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $item->album_songs_count }}</span>
                                 </td>
                                 <td class="align-middle">
                                     <div class="ms-auto">
-                                        <a class="btn btn-link text-danger text-gradient px-1 mb-0" href="{{ route('topics.destroy',$item->id) }}" onclick="return confirm('Bạn có chắc muốn xoá trường này không !')"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                                        <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('topics.edit',$item->id) }}"><i class="material-icons text-sm me-2">edit</i>Edit</a>
-                                        <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('topics.show',$item->id) }}"><i class="far fa-eye me-2"></i>View Topic</a>
-                                        <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('topics.addTopic',$item->id) }}"><i class="material-icons text-sm me-2">add</i>add playList</a>
+                                        <a class="btn btn-link text-danger text-gradient px-1 mb-0" href="{{ route('topics.destroyItemTopic',$item->id) }}" onclick="return confirm('Bạn có chắc muốn xoá PlayList này ra khỏi chủ để {{ $topicItem->title }} không !')"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                        <a class="btn btn-link text-dark px-1 mb-0" href="{{ route('playlist.viewPlayList',$item->id) }}"><i class="far fa-eye me-2"></i>View</a>
                                     </div>
                                 </td>
                             </tr>
-
                             @endforeach
+                      
                         </tbody>
                     </table>
                 </div>
@@ -109,10 +110,10 @@ Topic
 
 @endsection
 
-@section('album')
+@section('topic')
 <script>
     $(document).ready(function() {
-        let tableAlbum = $("#table-Topic").DataTable({
+        let tableAlbum = $("#table-viewTopic").DataTable({
             responsive: true,
             search: false,
             lengthChange: false,

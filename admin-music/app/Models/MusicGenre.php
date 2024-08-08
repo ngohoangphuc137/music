@@ -31,4 +31,7 @@ class MusicGenre extends Model
     {
         return $this->hasMany(Song::class);
     }
+    public function playList(){
+        return $this->belongsToMany(Album::class,'album_genres','music_genre_id','album_id');
+    }
 }

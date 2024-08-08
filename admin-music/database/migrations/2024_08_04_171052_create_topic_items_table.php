@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('topic_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Topic::class)->constrained();
-            $table->foreignIdFor(Album::class)->constrained();
+            $table->foreignIdFor(Topic::class)->index()->constrained();
+            $table->foreignIdFor(Album::class)->index()->unique()->constrained();
             $table->timestamps();
         });
     }

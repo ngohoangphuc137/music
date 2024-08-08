@@ -27,10 +27,16 @@ class Album extends Model
     public function albumGenres(){
         return $this->belongsToMany(MusicGenre::class,'album_genres','album_id','music_genre_id');
     }
+    public function genre(){
+        return $this->hasMany(AlbumGenre::class);
+    }
     public function albumSongs(){
         return $this->hasMany(AlbumSong::class);
     }
     public function songAlbumBeLongToMany(){
         return $this->belongsToMany(Song::class,'album_songs','album_id','song_id');
+    }
+    public function topicItems(){
+        return $this->hasMany(TopicItem::class,'album_id');
     }
 }

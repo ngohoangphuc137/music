@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('topics', function (Blueprint $table) {
-            $table->id();
+            $table->id()->index();
             $table->string('title')->nullable();
+            $table->string('aliasTitle')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
         });

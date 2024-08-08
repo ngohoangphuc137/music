@@ -182,6 +182,7 @@
     @yield('artists')
     @yield('songs')
     @yield('album')
+    @yield('topic')
     <script>
     var win = navigator.platform.indexOf("Win") > -1;
     if (win && document.querySelector("#sidenav-scrollbar")) {

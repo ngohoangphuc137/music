@@ -107,6 +107,11 @@ Route::group(['middleware'=>'isAdmin'],function(){
     Route::get('topic/edit/{id}',                     [TopicController::class,'edit'])->name('topics.edit');
     Route::post('topic/update/{id}',                  [TopicController::class,'update'])->name('topics.update');
     Route::get('topic/destroy/{id}',                  [TopicController::class,'destroy'])->name('topics.destroy');
+    Route::get('topic/addTopic/{id}',                 [TopicController::class,'addTopic'])->name('topics.addTopic');
+    Route::get('getPlayList/{id}/genre/{idGente}',    [TopicController::class,'getPlayList'])->name('topics.getPlayList');
+    Route::post('topic/addPlayList/{id}',             [TopicController::class,'insertPlaylist'])->name('topics.insertPlaylist');
+    Route::get('topic/show/{id}',                     [TopicController::class,'show'])->name('topics.show');
+    Route::get('topic/destroyItemTopic/{id}',         [TopicController::class,'destroyItemTopic'])->name('topics.destroyItemTopic');
 
     // route table user
     Route::get('user',                                [UserController::class,'index'])->name('users.index');
