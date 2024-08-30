@@ -1,0 +1,1 @@
+export {default as SongItem} from '~/components/carouselItem/songItem'
