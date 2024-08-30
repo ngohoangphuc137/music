@@ -39,4 +39,10 @@ class Album extends Model
     public function topicItems(){
         return $this->hasMany(TopicItem::class,'album_id');
     }
+    public function favoritesAlbums(){
+        return $this->hasMany(FavoritesAlbum::class);
+    }
+    public function user(){
+       return $this->belongsTo(User::class);
+    }
 }

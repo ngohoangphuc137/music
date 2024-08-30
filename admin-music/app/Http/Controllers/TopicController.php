@@ -12,6 +12,8 @@ use App\Models\TopicItem;
 use App\Models\MusicGenre;
 use App\Models\Album;
 use App\Models\AlbumGenre;
+use App\Models\FavoritesSong;
+use App\Models\Song;
 
 class TopicController extends Controller
 {
@@ -132,12 +134,13 @@ class TopicController extends Controller
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('topicItem'));
     }
-    public function destroyItemTopic(string $id){
-       $topicItem = TopicItem::query()->where('album_id',$id)->first();
+    public function destroyItemTopic(string $id)
+    {
+        $topicItem = TopicItem::query()->where('album_id', $id)->first();
 
-       $topicItem->delete();
-       
-       return back();
+        $topicItem->delete();
+
+        return back();
     }
     /**
      * Show the form for editing the specified resource.
