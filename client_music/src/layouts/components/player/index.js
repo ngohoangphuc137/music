@@ -7,9 +7,9 @@ import "tippy.js/dist/tippy.css"; // optional
 
 import { infoSong, linkSong } from "~/services/musicServicer";
 import Icons from "~/components/icons";
-import { setPlay } from "~/state/actions/song";
+import { setPlay, setLoader, setSonginfo, setIsSlidebarRight, setCurSong } from "~/state/actions/song";
 import { useDebounce } from "~/hooks";
-import { setLoader } from "~/state/actions/song";
+import { toggleSlideBarRight } from "~/state/actions/home";
 
 const {
   //IoMdHeart,
@@ -28,62 +28,88 @@ const {
 
 const Player = () => {
   const dispatch = useDispatch();
-  const audioPlayer = useRef(new Audio())
-  const { currunSongId, isPlay, loader } = useSelector((state) => state.song);
-  const [songInfo, setSonginfo] = useState(null);
-  const [source, setSource] = useState(null)
-  const debounceInfo = useDebounce(currunSongId, 0)
+  const audioPlayer = useRef(new Audio());
+  const { currunSongId, isPlay, loader, songInfo, listStateSong } = useSelector(
+    (state) => state.song
+  );
+  const { slideBarRight } = useSelector((state) => state.home);
+  const [source, setSource] = useState(null);
+  const debounce = useDebounce(currunSongId, 750);
+
   useEffect(() => {
     const detaiSong = async () => {
-      dispatch(setLoader(false))
-      audioPlayer.current.muted = true
-      // audioPlayer.current.pause()
-      audioPlayer.current.currentTime = 0
+      dispatch(setLoader(false));
+      audioPlayer.current.muted = true;
       if (currunSongId !== null) {
-        const [info, linkMusic] = await Promise.all([
-          infoSong(currunSongId),
-          linkSong(currunSongId)
-        ])
+        const info = await infoSong(currunSongId);
         if (info.status === 200) {
-          setSonginfo(info.data.data);
+          audioPlayer.current.pause()
+          dispatch(setSonginfo(info.data.data));
         }
+      }
+    };
+    if (currunSongId !== null && currunSongId !== songInfo?.id) detaiSong();
+  }, [currunSongId]);
+
+  useEffect(() => {
+    const detaiSong = async () => {
+      if (currunSongId !== null) {
+        const linkMusic = await linkSong(currunSongId);
         if (linkMusic.status === 200) {
-          setSource(linkMusic.data.data.linkSong)
+          dispatch(setLoader(true));
+          audioPlayer.current.removeAttribute("src");
+          audioPlayer.current.currentTime = 0
+          audioPlayer.current.src = linkMusic.data.data.linkSong;
+          setSource(linkMusic.data.data.linkSong);
         }
       }
     };
     detaiSong();
-  }, [debounceInfo]);
+  }, [debounce]);
 
   useEffect(() => {
-    dispatch(setLoader(true))
-    if (source === null) return
-    audioPlayer.current.muted = false
-    if (audioPlayer.current.src !== source) {
-      audioPlayer.current.load()
-      audioPlayer.current.src = source
-    }
-    if (isPlay) audioPlayer.current.play();
-  }, [source])
-
-  useEffect(() => {
-    if (audioPlayer.current.src === source) {
+    dispatch(setLoader(true));
+    if (source !== null) {
       audioPlayer.current.muted = false
-      isPlay ? audioPlayer.current.play() : audioPlayer.current.pause();
-    } else {
-      audioPlayer.current.muted = true
+      if (
+        isPlay &&
+        audioPlayer.current.currentTime === 0 &&
+        audioPlayer.current.paused
+      ) {
+        audioPlayer.current.play();
+      }
     }
+
+  }, [source]);
+
+  useEffect(() => {
+    if (source === null || !audioPlayer.current.src) return
+    isPlay ? audioPlayer.current.play() : audioPlayer.current.pause()
   }, [isPlay]);
 
   const hanldToggleSong = async () => {
+    dispatch(setIsSlidebarRight(true));
     if (isPlay) {
-     // audioPlayer.current.pause();
+      // audioPlayer.current.pause();
       dispatch(setPlay(false));
     } else {
-     // audioPlayer.current.play();
+      // audioPlayer.current.play();
       dispatch(setPlay(true));
     }
   };
+  const hanldToggleSlideRight = () => {
+    dispatch(toggleSlideBarRight(!slideBarRight));
+  };
+  const handlNextSong = () => {
+    dispatch(setCurSong(listStateSong.next[0].id))
+    dispatch(setPlay(true))
+  }
+  const handlPreSong = () => {
+    const lengthListSong = listStateSong.pre?.length - 1
+    const song = listStateSong.pre[lengthListSong - 1]
+    dispatch(setCurSong(song.id))
+    dispatch(setPlay(true))
+  }
 
   return (
     <div className="fixed bottom-0 w-[100%] z-[2] cursor-pointer bg-[#170f23]">
@@ -112,7 +138,11 @@ const Player = () => {
               <h3 className="text-[13.5px] text-color-custom">
                 {songInfo?.artist
                   .map((artist) => (
-                    <Link key={artist.id} to="/">
+                    <Link
+                      key={artist.id}
+                      className="hover:text-[#c273ed] hover:underline"
+                      to={`/nghe-si/${artist.alias}`}
+                    >
                       {artist.name}
                     </Link>
                   ))
@@ -147,22 +177,31 @@ const Player = () => {
                   <PiShuffle className="m-[3px]" size={20} />
                 </button>
               </Tippy>
-              <button className="mx-[7px] hover:bg-active-bg rounded-[50%] p-[0.20rem] border-none">
-                <MdSkipPrevious className="m-[3px]" size={20} />
+              <button
+                onClick={() => { if (listStateSong.pre?.length > 1) handlPreSong() }}
+                className={`mx-[7px] hover:bg-active-bg ${listStateSong.pre?.length < 2 ? 'cursor-not-allowed' : ''} rounded-[50%] p-[0.20rem] border-none`}>
+                <MdSkipPrevious className={`m-[3px] ${listStateSong.pre?.length < 2 ? 'text-[#7e7b7b]' : ''}`} size={20} />
               </button>
               <button
                 className="mx-[7px]  border border-white border-solid rounded-[50%] p-1"
-                onClick={()=>{if(loader)hanldToggleSong()}}
+                onClick={() => {
+                  if (loader) hanldToggleSong();
+                }}
               >
-                {loader ? (isPlay ? (
-                  <IoIosPause className="p-[1px]" size={20} />
+                {loader ? (
+                  isPlay ? (
+                    <IoIosPause className="p-[1px]" size={20} />
+                  ) : (
+                    <FaPlay className="p-[3.5px]" size={20} />
+                  )
                 ) : (
-                  <FaPlay className="p-[3.5px]" size={20} />
-                )) : <RiLoader2Line size={20} className="loaderSong" />}
-
+                  <RiLoader2Line size={20} className="loaderSong" />
+                )}
               </button>
-              <button className="mx-[7px] hover:bg-active-bg rounded-[50%] p-[0.20rem] border-none">
-                <MdSkipNext className="m-[3px]" size={20} />
+              <button
+                onClick={() => { if (listStateSong.next?.length >= 1) handlNextSong() }}
+                className={`mx-[7px] hover:bg-active-bg ${listStateSong.next?.length < 1 ? 'cursor-not-allowed' : ''} rounded-[50%] p-[0.20rem] border-none`}>
+                <MdSkipNext className={`m-[3px] ${listStateSong.next?.length < 1 ? 'text-[#7e7b7b]' : ''}`} size={20} />
               </button>
               <Tippy content="Bật phát lại">
                 <button className="mx-[7px] hover:bg-active-bg rounded-[50%] p-1 border-none">
@@ -195,9 +234,18 @@ const Player = () => {
             <div className="h-[33px] w-[1px] mx-[20px] bg-border-player"></div>
           </div>
           <div>
-            <button className="bg-[#9b4de0] rounded-[4px]">
-              <BsMusicNoteList className="mx-[7px] my-2" size={16} />
-            </button>
+            <Tippy content="Danh sách phát">
+              <button
+                onClick={() => hanldToggleSlideRight()}
+                className={
+                  slideBarRight
+                    ? "bg-[#9b4de0] rounded-[4px]"
+                    : "bg-[hsla(0,0%,100%,.1)] rounded-[4px]"
+                }
+              >
+                <BsMusicNoteList className="mx-[7px] my-2" size={16} />
+              </button>
+            </Tippy>
           </div>
         </div>
       </div>

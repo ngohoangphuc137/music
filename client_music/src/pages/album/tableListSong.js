@@ -1,40 +1,13 @@
-import { useState, memo,createContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { memo } from "react";
 
 import SelectItem from "~/components/carouselItem/selectItem"
-import { setPlay, setCurSong } from "~/state/actions/song";
-import useOnClickOutside from "~/hooks/useOnClickOutside";
+import hocSong from "~/components/HOC/hocSong";
 
-export const Themecontext = createContext();
 
-const TableListSong = ({ playList }) => {
-  const dispatch = useDispatch();
-  const { currunSongId, isPlay } = useSelector((state) => state.song);
-  const [selectSongId, setSelectSongId] = useState(null);
-  const [ref, setRef] = useState(null);
-  const [seeMore, setSeeMore] = useState(false);
-
-  const handlPlayMusic = (id) => {
-    setSelectSongId(id);
-    if (currunSongId !== id) {
-      dispatch(setCurSong(id))
-      dispatch(setPlay(true));
-    }
-    if (selectSongId === id) {
-      isPlay ? dispatch(setPlay(false)) : dispatch(setPlay(true))
-    }
-  };
-  const handlSeeMore = (ref) => {
-    setRef(ref)
-  }
-  const handl = (e) => {
-    setSeeMore(e)
-  }
-  useOnClickOutside(ref, handl)
-  
+const TableListSong = ({ playList, isSong = false, Context }) => {
 
   return (
-    <Themecontext.Provider value={[handlPlayMusic,handlSeeMore,isPlay,seeMore,currunSongId,selectSongId]}>
+    <>
       <div>
         <div>
           <div className="h-11 flex items-center justify-center p-[10px] rounded-[5px] border-b border-solid border-[hsla(0,0%,100%,0.05)]">
@@ -48,7 +21,7 @@ const TableListSong = ({ playList }) => {
             <div className="flex-auto flex-shrink flex-grow text-left self-center w-0 ml-[-10px]">
               <div>
                 <div className="text-[14px] font-medium text-[hsla(0,0%,100%,0.5)]">
-                  {!playList?.isAlbum ? "Album" : ""}
+                  {!isSong && !playList?.isAlbum ? "Album" : ""}
                 </div>
               </div>
             </div>
@@ -62,27 +35,47 @@ const TableListSong = ({ playList }) => {
           </div>
 
           <div>
-            {playList?.song.map((item) => (
-              <SelectItem
-                key={item.id}
-                id={item.id}
-                album={item.album}
-                name={item.name}
-                thumbnail={item.thumbnail}
-                thumbnailAlbum={playList?.thumbnail}
-                duration={item.duration}
-                artist={item.artist}
-                composers={item.composers}
-                genre={item.genre}
-                totalListens={item.totalListens}
-                totalFavourited={item.totalFavourited}
-                isAlbum={playList?.isAlbum}
-              />
-            ))}
+            {!isSong
+              ? (playList?.song.map((item) => (
+                <SelectItem
+                  key={item.id}
+                  id={item.id}
+                  isLuMusic={true}
+                  album={item.album}
+                  name={item.name}
+                  thumbnail={item.thumbnail}
+                  thumbnailAlbum={playList?.thumbnail}
+                  duration={item.duration}
+                  artist={item.artist}
+                  composers={item.composers}
+                  genre={item.genre}
+                  totalListens={item.totalListens}
+                  totalFavourited={item.totalFavourited}
+                  isAlbum={playList?.isAlbum}
+                  Themecontext={Context}
+                />
+              )))
+              : (<SelectItem
+                id={playList?.id}
+                isLuMusic={true}
+                album={playList?.album}
+                name={playList?.name}
+                thumbnail={playList?.thumbnail}
+                thumbnailAlbum={playList?.album?.thumbnail}
+                duration={playList?.duration}
+                artist={playList?.artist}
+                composers={playList?.composers}
+                genre={playList?.genre}
+                totalListens={playList?.totalListens}
+                totalFavourited={playList?.totalFavourited}
+                isAlbum={playList?.album?.isAlbum}
+                Themecontext={Context}
+              />)
+            }
           </div>
         </div>
       </div>
-    </Themecontext.Provider>
+    </>
   )
 }
-export default memo(TableListSong)
+export default hocSong(memo(TableListSong), true,'ALBUM')

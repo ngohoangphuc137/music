@@ -1,7 +1,7 @@
-import { TbMusicHeart } from "react-icons/tb";
+import { TbMusicHeart,TbUserPlus } from "react-icons/tb";
 import { GoArrowLeft,GoArrowRight,GoSearch   } from "react-icons/go";
 import { IoMdHeart,IoMdHeartEmpty,IoIosPause  } from "react-icons/io";
-import { RxDotsHorizontal } from "react-icons/rx";
+import { RxDotsHorizontal,RxDotFilled } from "react-icons/rx";
 import { PiShuffle,PiMicrophoneStage} from "react-icons/pi";
 import { FaPlay } from "react-icons/fa";
 import { MdSkipPrevious,MdSkipNext,MdHorizontalRule } from "react-icons/md";
@@ -9,11 +9,13 @@ import { CiRepeat } from "react-icons/ci";
 import { IoVolumeMedium ,IoAddCircleOutline} from "react-icons/io5";
 import { BsMusicNoteList } from "react-icons/bs";
 import { LuMusic } from "react-icons/lu";
-import { RiLoader2Line } from "react-icons/ri";
+import { RiLoader2Line,RiDiscLine } from "react-icons/ri";
 import { SlEarphones } from "react-icons/sl";
 import { HiOutlineInformationCircle } from "react-icons/hi2";
 import { GrNext } from "react-icons/gr";
-import { IoPlayCircleSharp } from "react-icons/io5";
+import { IoPlayCircleSharp,IoCloseOutline } from "react-icons/io5";
+import { GiMicrophone } from "react-icons/gi";
+
 
 
 const Library = () => (
@@ -104,6 +106,11 @@ const Icons = {
     GrNext,
     MdHorizontalRule,
     IoPlayCircleSharp,
+    TbUserPlus,
+    IoCloseOutline,
+    RxDotFilled,
+    RiDiscLine,
+    GiMicrophone,
 };
 
 export default Icons;

@@ -1,3 +1,5 @@
+import { memo } from "react"
+
 import Icons from "~/components/icons"
 import Search from "../search"
 import image from "~/assets/images"
@@ -5,7 +7,7 @@ import image from "~/assets/images"
 
 const { GoArrowLeft, GoArrowRight } = Icons
 
-const Header = () => {
+const Header = () => {    
     return (
         <header
             className="zm-header h-[70px] flex items-center sticky top-0 right-0 min-[660px] z-[100] left-[240px] px-[59px]">
@@ -14,7 +16,7 @@ const Header = () => {
                     <button><GoArrowLeft size={24} className="mr-[20px]" /></button>
                     <button><GoArrowRight size={24} className="mr-[20px]" /></button>
 
-                    <Search/>
+                    <Search />
                 </div>
                 <div>
                     <button>
@@ -27,4 +29,4 @@ const Header = () => {
         </header>
     )
 }
-export default Header
+export default memo(Header)

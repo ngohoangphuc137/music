@@ -2,18 +2,18 @@ import { Link } from "react-router-dom";
 import HeadlessTippy from "@tippyjs/react/headless";
 import { memo, useRef } from "react";
 import { useSelector } from "react-redux";
+import { useContext } from "react"
 
 import Icons from "../icons";
 import convertTime from "~/utils/convertTime";
 import ItemSeemore from "./itemSeeMore";
-import { useContext } from "react"
-import { Themecontext } from "~/pages/album/tableListSong"
 
-const { LuMusic, IoMdHeartEmpty, RxDotsHorizontal, FaPlay, RiLoader2Line } =Icons;
+const { LuMusic, IoMdHeartEmpty, RxDotsHorizontal, FaPlay, RiLoader2Line } = Icons;
 
 const SelectItem = memo(
   ({
     id,
+    isLuMusic,
     album,
     name,
     thumbnail,
@@ -25,16 +25,17 @@ const SelectItem = memo(
     totalListens,
     totalFavourited,
     isAlbum,
+    Themecontext
   }) => {
     const myRef = useRef();
     const refItemSeeMore = useRef()
     const { loader } = useSelector((state) => state.song);
-    const [handlPlayMusic,handlSeeMore,isPlay,seeMore,currunSongId,selectSongId] = useContext(Themecontext)
-    
+    const [handlPlayMusic, handlSeeMore, isPlay, seeMore, currunSongId] = useContext(Themecontext)
+
     return (
       <div
         className={
-          selectSongId === id || currunSongId === id
+          currunSongId === id
             ? "SelectItem active-song rounded-[5px]"
             : "SelectItem hover:bg-active-bg rounded-[5px]"
         }
@@ -49,25 +50,27 @@ const SelectItem = memo(
           }
         >
           <div className="flex items-center justify-center p-[10px] rounded-[5px] select-none group">
-            <div className="flex items-center w-[50%] mr-[10px] flex-auto flex-shrink-0 flex-grow-0">
-              <div className="text-[hsla(0,0%,100%,0.5)] mr-2">
-                <LuMusic />
-              </div>
-              <div className="mr-[10px] relative block rounded-[4px] overflow-hidden cursor-pointer">
+            <div className="flex items-center w-[50%] mr-[10px]">
+              {isLuMusic
+                ?
+                <div className="text-[hsla(0,0%,100%,0.5)] mr-2">
+                  <LuMusic />
+                </div>
+                : ""
+              }
+              <div className="mr-[10px] relative block rounded-[4px] cursor-pointer">
                 <figure className="w-[40px] h-[40px]">
                   <img
-                    className="w-[100%] h-auto"
+                    className="w-[100%] h-auto rounded-[4px]"
                     src={isAlbum ? thumbnailAlbum : thumbnail}
                     alt=""
                   />
                 </figure>
-                <div className="opacity absolute w-[100%] h-[100%] group-hover:bg-[rgba(0,0,0,0.5)] top-0 left-0 z-0"></div>
-                <div className="actionPlaying absolute hidden group-hover:block top-0 left-0 right-0 bottom-0 z-[2]">
+                <div className="opacity absolute w-[100%] h-[100%] rounded-[4px] group-hover:bg-[rgba(0,0,0,0.5)] top-0 left-0 z-0"></div>
+                <div className="actionPlaying rounded-[4px] absolute hidden group-hover:block top-0 left-0 right-0 bottom-0 z-[2]">
                   <div className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
                     <button
-                      onClick={() => {
-                        if (loader) handlPlayMusic(id);
-                      }}
+                      onClick={() => handlPlayMusic(id) }
                     >
                       {
                         isPlay && currunSongId === id ? (
@@ -90,13 +93,13 @@ const SelectItem = memo(
                   </div>
                 </div>
               </div>
-              <div>
-                <div className="text-sm font-medium leading-[1.3]">{name}</div>
-                <h3 className="text-[hsla(0,0%,100%,0.5)] leading-[1.3] text-[14px] mt-[2.5px]">
-                  {artist
-                    .map((item) => (
+              <div className="w-[75%] flex flex-col">
+                <div className="text-sm font-medium leading-[1.3] max-w-[100%] inline-block overflow-hidden whitespace-pre text-ellipsis">{name}</div>
+                <h3 className="text-[hsla(0,0%,100%,0.5)] leading-[1.3] text-[14px] mt-[2.5px] items-center max-w-[100%] inline-block overflow-hidden whitespace-pre text-ellipsis">
+                  {artist?.map((item) => (
                       <Link
                         key={item.id}
+                        to={'/nghe-si/'+item.alias}
                         className="hover:underline hover:text-[#c273ed]"
                       >
                         {item.name}
@@ -107,14 +110,14 @@ const SelectItem = memo(
               </div>
             </div>
             <div className="flex-auto flex-grow flex-shrink text-left self-center w-0 ml-[-10px]">
-              <div className="text-[hsla(0,0%,100%,0.5)] text-[15px] max-w-[100%]">
+              <div className="text-[hsla(0,0%,100%,0.5)] text-[15px] flex items-center">
                 {album !== null ? (
-                  !isAlbum ? (
+                  !isAlbum || !isLuMusic ? (
                     <Link
-                      to={"/album/" + album.aliasTitle + "/" + album.id}
-                      className="hover:underline hover:text-[#c273ed] cursor-pointer"
+                      to={"/album/" + album?.aliasTitle + "/" + album?.id}
+                      className="hover:underline hover:text-[#c273ed] max-w-[100%] inline-block cursor-pointer overflow-hidden whitespace-pre text-ellipsis"
                     >
-                      {album.title}
+                      {album?.title}
                     </Link>
                   ) : (
                     ""
@@ -133,12 +136,12 @@ const SelectItem = memo(
                     </button>
                   </div>
                   <div className="flex items-center justify-end ml-1">
-                    <HeadlessTippy    
+                    <HeadlessTippy
                       interactive="true"
                       trigger="click"
                       render={(attrs) => (
-                        <div ref={refItemSeeMore} onMouseDown={() => handlSeeMore(myRef)}  className="w-auto" tabIndex="-1" {...attrs}>
-                         <ItemSeemore  id={id} name={name} artist={artist} composers={composers} genre={genre} image={thumbnail} totalListens={totalListens} totalFavourited={totalFavourited} />
+                        <div ref={refItemSeeMore} onMouseDown={() => handlSeeMore(myRef)} className="w-auto" tabIndex="-1" {...attrs}>
+                          <ItemSeemore id={id} name={name} artist={artist} composers={composers} genre={genre} image={thumbnail} totalListens={totalListens} totalFavourited={totalFavourited} />
                         </div>
                       )}
                     >

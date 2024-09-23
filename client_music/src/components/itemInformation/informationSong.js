@@ -7,8 +7,11 @@ const InformationSong = ({ artist, album, composers, genre }) => {
                 <div className="item" >
                     <h3 className="text-[hsla(0,0%,100%,0.5)] uppercase text-[13.5px]">Nghệ sĩ</h3>
                     <div>
-                        {artist.map(item => (
-                            <Link key={item.id} className="not-italic text-white hover:text-[#c273ed]" to={'/'}>{item.name}</Link>
+                        {artist?.map(item => (
+                            <Link 
+                            to={'/nghe-si/'+item.alias}
+                            key={item.id} 
+                            className="not-italic text-white hover:text-[#c273ed]">{item.name}</Link>
                         )).reduce((prev, curr) => [prev, ", ", curr])}
                     </div>
                 </div>
@@ -16,20 +19,20 @@ const InformationSong = ({ artist, album, composers, genre }) => {
                     <div className="item" >
                         <h3 className="text-[hsla(0,0%,100%,0.5)] uppercase text-[13.5px]">Album</h3>
                         <div>
-                            <Link  className="not-italic text-white hover:text-[#c273ed]" to={`/album/${album.aliasTitle}/${album.id}`}>{album.title}</Link>
+                            <Link  className="not-italic text-white hover:text-[#c273ed]" to={`/album/${album?.aliasTitle}/${album?.id}`}>{album.title}</Link>
                         </div>
                     </div>
                 ) : ''}
                 <div className="item" >
                     <h3 className="text-[hsla(0,0%,100%,0.5)] uppercase text-[13.5px]">Sáng tác</h3>
                     <div>
-                        {composers.map(item => (<Link key={item.id} className="not-italic text-white hover:text-[#c273ed]" to={'/'}>{item.name}</Link>)).reduce((prev, curr) => [prev, ", ", curr])}
+                        {composers?.map(item => (<Link  to={'/nghe-si/'+item.alias} key={item.id} className="not-italic text-white hover:text-[#c273ed]">{item.name}</Link>)).reduce((prev, curr) => [prev, ", ", curr])}
                     </div>
                 </div>
                 <div className="item" >
                     <h3 className="text-[hsla(0,0%,100%,0.5)] uppercase text-[13.5px]">Thể loại</h3>
                     <div>
-                        {genre.map(item=>(<Link key={item.id} className="not-italic text-white hover:text-[#c273ed]" to={'/'}>{item.name}</Link>)).reduce((prev, curr) => [prev, ", ", curr])}
+                        {genre?.map(item=>(<Link key={item.id} className="not-italic text-white hover:text-[#c273ed]" to={`/the-loai-album/${item.alias}/${item.id}`}>{item.name}</Link>)).reduce((prev, curr) => [prev, ", ", curr])}
                     </div>
                 </div>
             </div>

@@ -1,16 +1,20 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { Homecontext } from "~/pages/Home";
+import { useSelector } from "react-redux";
 
 import Icons from "../icons";
 
 const { RxDotsHorizontal, FaPlay,RiLoader2Line } = Icons;
 
-const SongItem = ({ id,thumb, name, artist,selectSongId }) => {
+const SongItem = ({ id,thumb, name, artist}) => {
   const [isPlay,loader,handlPlaying] = useContext(Homecontext)
+  const { currunSongId } = useSelector(
+    (state) => state.song
+);
   return (
     <div className={
-      selectSongId === id ?'mx-2 rounded-[1px] active-song mt-1 group':'mx-2 rounded-[1px] hover:bg-border-player mt-1 group'
+      currunSongId === id ?'mx-2 rounded-[1px] active-song mt-1 group':'mx-2 rounded-[1px] hover:bg-border-player mt-1 group'
     }>
       <div className="flex items-center p-[10px] text-left">
         <div className="flex-shrink-[1] flex-grow-[1] flex">
@@ -21,7 +25,7 @@ const SongItem = ({ id,thumb, name, artist,selectSongId }) => {
               <div className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
                 <button onClick={()=>handlPlaying(id)}>
                 {
-                        isPlay && selectSongId === id ? (
+                        isPlay && currunSongId === id ? (
                           loader ? (
                             <i
                               className={`iconActiconPlay ${loader ? "" : "hidden"

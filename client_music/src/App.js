@@ -1,32 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Routes, Route } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux"
 import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import { PublicRoutes } from "~/routers";
 import DefaultLayout from "~/layouts/DefaultLayout";
-import { getIdSong } from "./services/musicServicer";
-import { setCurSong } from "./state/actions/song";
-import { setLoader } from "./state/actions/song";
-
+import { genreParent } from "./services/genreAlbumServicer";
+import { setGenreParent } from "./state/actions/home";
 
 function App() {
-  const dispatch = useDispatch()
-  const { currunSongId } = useSelector(state => state.song)
-
+  const dispatch = useDispatch();
+  const { genre_parent } = useSelector(state => state.home)
   useEffect(() => {
-    dispatch(setLoader(false))
-    if (currunSongId == null) {
-      const songId = async () => {
-        const response = await getIdSong()
-        const id = response.data.data.idSong;
-        if (response.status === 200) {
-          dispatch(setLoader(true))
-          dispatch(setCurSong(id))
-        }
+    const fetchApi = async () => {
+      const response = await genreParent()
+      if (response.data.status === 200) {
+        dispatch(setGenreParent(response.data.data))
       }
-      songId()
     }
+    if (genre_parent === null) fetchApi()
   }, [])
   return (
     <div className="App">
@@ -35,9 +27,21 @@ function App() {
           {
             PublicRoutes.map((route, index) => {
               const Page = route.component
-              return (
-                <Route key={index} path={route.path} element={<Page />} />
-              )
+
+              if (route.layoutChilrden) {
+                return (
+                  <Route key={index} path={route.path} element={<Page />}>
+                    {route.layoutChilrden.map((routeChilrend, index) => {
+                      const PageChilrden = routeChilrend.component
+                      return (<Route key={index} path={routeChilrend.path} element={<PageChilrden />} />)
+                    })}
+                  </Route>
+                )
+              } else {
+                return (
+                  <Route key={index} path={route.path} element={<Page />} />
+                )
+              }
             })
           }
         </Route>

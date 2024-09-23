@@ -3,12 +3,12 @@ import Icons from "../icons";
 
 const { FaPlay, IoMdHeartEmpty, RxDotsHorizontal } = Icons;
 
-const Album = ({ id,title,aliasTitle, thumbnail, description, isAlbum, artist }) => {
+const Album = ({ id, title, aliasTitle, thumbnail, description, isAlbum, artist }) => {
   return (
-    <div className="lg:w-[20%] group mx-[14px]" title={title}>
+    <div className="lg:w-[88%] group mx-[14px] mt-7" title={title}>
       <div>
         <div>
-          <Link to={'album/'+aliasTitle+'/'+id} className="z-[1]">
+          <Link to={'/album/' + aliasTitle + '/' + id} className="z-[1]">
             <div className="rounded-[4px] w-[100%] h-[100%] overflow-hidden block relative">
               <img
                 className="w-auto h-[100%] duration-[0.7s] ease-out group-hover:scale-[1.1]"
@@ -36,7 +36,7 @@ const Album = ({ id,title,aliasTitle, thumbnail, description, isAlbum, artist })
           <h3 className="text-[15px] font-normal leading-[1.33] text-[hsla(0,0%,100%,0.5)]">
             <span>
               {isAlbum ? (
-                <span className="font-semibold text-[#f6f5f5]">{title}</span>
+                <span className="font-semibold text-[#f6f5f5] inline-block max-w-[100%] overflow-hidden whitespace-pre text-ellipsis">{title}</span>
               ) : description == null ? (
                 title
               ) : (
@@ -45,7 +45,7 @@ const Album = ({ id,title,aliasTitle, thumbnail, description, isAlbum, artist })
             </span>
           </h3>
           <>
-            {isAlbum ? (
+            {isAlbum && artist !== undefined ? (
               <h4 className="limit-text text-[hsla(0,0%,100%,0.5)] text-[14px]">
                 {artist
                   .map((item) => <Link key={item.id} className="hover:underline" >{item.name}</Link>)
