@@ -16,11 +16,16 @@ class ArtistResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=>$this->id,
-            'name'=>$this->name,
-            'thumbnail'=>Storage::url($this->thumbnail),
-            'alias'=>$this->alias,
-            'totalFollow'=>$this->followers_count,
+            $this->mergeWhen(isset($this->type),[
+               'type'=>$this->type
+            ]),
+            'id' => $this->id,
+            'name' => $this->name,
+            'thumbnail' => Storage::url($this->thumbnail),
+            'alias' => $this->alias,
+            'national' => isset($this->country) ? $this->country?->name : "_",
+            'realname' => $this->realname,
+            'totalFollow' => $this->followers_count,
         ];
     }
 }

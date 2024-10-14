@@ -16,7 +16,8 @@ class AlbumGenre extends Model
     {
         return $this->belongsTo(MusicGenre::class, 'music_genre_id');
     }
-    public function album(){
+    public function album()
+    {
         return $this->belongsTo(Album::class);
     }
 }

@@ -13,9 +13,15 @@ class Follow extends Model
         'artist_id',
         'is_active'
     ];
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+    public function artist(){
+        return $this->belongsTo(Artist::class);
     }
 
 }

@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SongImplementer extends Model
+class RecentlyHeard extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'song_id',
-        'artist_id',
+        "user_id",
+        "song_id",
     ];
-    public function songs()
+    public function song()
     {
-        return $this->belongsTo(Song::class,'song_id');
+        return $this->belongsTo(Song::class);
     }
 }

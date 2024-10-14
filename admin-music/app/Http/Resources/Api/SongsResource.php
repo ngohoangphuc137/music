@@ -20,16 +20,28 @@ class SongsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            $this->mergeWhen(isset($this->type),[
+                'type'=>$this->type
+            ]),
             'id' => $this->id,
             'name' => $this->name,
             'alias' => $this->alias,
             'thumbnail' =>Storage::url($this->thumbnail),
             'duration' => $this->duration,
-            'link' => '/bai-hat/' . $this->alias . '/' . $this->id,
-            'artist'=>ArtistResource::collection($this->whenLoaded('artist')),
-            'composers'=>ArtistResource::collection($this->whenLoaded('song_composers')),
+            // 'link' => '/bai-hat/' . $this->alias . '/' . $this->id,
+            $this->mergeWhen($this->relationLoaded('artist'),[
+                'artist'=>ArtistResource::collection($this->whenLoaded('artist')),
+            ]),
+            $this->mergeWhen($this->relationLoaded('song_composers'),[
+                'composers'=>ArtistResource::collection($this->whenLoaded('song_composers'))
+            ]),
+            $this->mergeWhen(isset($this->audio_file),[
+                'audio_file'=>$this->audio_file
+            ]),
             'genre' => $this->genre($this->music_genre_id),
-            'album'=>new AlbumResource($this->whenLoaded('album')),
+            $this->mergeWhen($this->relationLoaded('album'),[
+                'album'=>new AlbumResource($this->whenLoaded('album')),
+            ]),
             'totalListens' => $this->total_listens,
             'totalFavourited' => $this->favorites_song_count,
         ];

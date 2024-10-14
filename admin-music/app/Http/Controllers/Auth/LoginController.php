@@ -23,12 +23,13 @@ class LoginController extends Controller
         // Auth::attempt xác nhận thông tin người dùng
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
-
+            if(Auth::user()->email_verified_at === null){
+                return redirect()->route('login')->with('verified','Tài khoản email chưa xác nhận!');
+            }
             if(Auth::user()->isAdmin()){
                 return redirect()->intended('/');
             }
-            return redirect()->intended('/login');
+            return abort(403,'Bạn không đủ thầm quyền để chuy cập');
         }
 
         return back()->withErrors([

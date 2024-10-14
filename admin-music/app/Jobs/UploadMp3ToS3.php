@@ -7,6 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+
 
 class UploadMp3ToS3 implements ShouldQueue
 {
@@ -27,6 +29,7 @@ class UploadMp3ToS3 implements ShouldQueue
     public function handle(): void
     {
 
+        //songs
         // Đặt tên file chính xác khi upload lên S3
         $s3FilePath = Storage::disk('public')->get($this->filePath);
 

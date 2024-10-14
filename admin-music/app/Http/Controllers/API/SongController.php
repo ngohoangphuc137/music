@@ -30,6 +30,7 @@ class SongController extends Controller
                     'name',
                     'thumbnail',
                     'alias',
+                    'audio_file',
                     'duration',
                     'release_date',
                     'total_listens',
@@ -68,7 +69,8 @@ class SongController extends Controller
         }
         return response()->json([
             'data' => new SongsResource($data),
-            'ms' => 'success'
+            'ms' => 'success',
+            'status'=>200
         ], Response::HTTP_OK);
     }
     public function linkSong(Request $request)
@@ -127,7 +129,7 @@ class SongController extends Controller
                             }
                         ]);
                 },
-            ])->paginate(1);
+            ])->get();
         return SongsResource::collection($musicFavorites);
     }
 

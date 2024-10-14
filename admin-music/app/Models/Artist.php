@@ -19,7 +19,9 @@ class Artist extends Model
         "sex",
         "link",
     ];
-
+    public function getTypeArtistAttribute(){
+        return 'artist';
+    }
     public function country()
     {
         return $this->belongsTo(Country::class);

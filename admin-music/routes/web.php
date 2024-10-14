@@ -1,8 +1,8 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\MusicGenreController;
@@ -12,6 +12,7 @@ use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GoogleAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,14 +29,21 @@ use App\Http\Controllers\UserController;
 //     return view('welcome');
 // });
 
-// Auth::routes();
+// Auth::routes(['verify'=>true]);
 Route::get('login',                                   [LoginController::class,'showLoginForm'])->name('login');
 Route::post('login',                                  [LoginController::class,'login']);
+
 
 Route::post('logout',                                 [LoginController::class,'logout'])->name('logout');
 
 Route::get('register',                                [RegisterController::class,'showRegisterForm'])->name('register');
 Route::post('register',                               [RegisterController::class,'register']);
+Route::get('/email/verify',                           [RegisterController::class,'verifyEmail'])->name('verification.notice');
+
+Route::get('/email/resend',                           [VerificationController::class,'verifyResend'])->name('verification.resend');
+Route::get('/email/verify/{id}/{hash}',               [VerificationController::class,'checkVerifyUser'])->name('verification.verify');
+Route::get('/auth/redirect',                          [GoogleAuthController::class,'redirectAuthGoogle'])->name('google-auth');
+Route::get('/auth/google/call-back',                  [GoogleAuthController::class,'callBackGoogle']);
 
 Route::get('/home',                                   [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 

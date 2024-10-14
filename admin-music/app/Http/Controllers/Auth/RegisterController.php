@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Registered;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\MustVerifyEmail;
+use App\Notifications\CustomVerifyEmail;
+use Illuminate\Support\Facades\Notification;
 
 class RegisterController extends Controller
 {
@@ -22,12 +26,20 @@ class RegisterController extends Controller
         ]);
 
         $user = User::query()->create($data);
+        // event(new Registered($user));
+        Notification::sendNow($user,new CustomVerifyEmail($user));
 
-        Auth::login($user);
+        if (!$user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/');
+        return redirect()->route('login');
 
     }
+    public function verifyEmail(Request $request){
+        return view("auth.verify");
+    }
+
 }

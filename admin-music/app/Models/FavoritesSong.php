@@ -16,4 +16,7 @@ class FavoritesSong extends Model
     protected $casts = [
         'favourited' => 'boolean',
     ];
+    public function song(){
+        return $this->belongsTo(Song::class);
+    }
 }

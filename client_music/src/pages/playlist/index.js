@@ -97,7 +97,7 @@ const Playlist = ({ Context, handlRemoveToPlatlist }) => {
             toast.warning("Bạn cần đăng nhập tài khoản!");
         }
     }
-    //{`mt-[60px] lg:px-[59px] sm:px-[20px] min-[300px]:px-3 ${maxW768 ? 'relative h-[calc(100vh-135px)]' : 'absolute'} inset-0`}
+
     return (
         <div className={`lg:px-[59px] sm:px-[20px] min-[300px]:px-3  ${maxW768 ? 'relative h-[calc(100vh-135px-60px)]' : 'absolute mt-[60px] '} inset-0`}>
             {loading ? (

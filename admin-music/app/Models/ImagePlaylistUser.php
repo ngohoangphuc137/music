@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SongImplementer extends Model
+class ImagePlaylistUser extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'song_id',
-        'artist_id',
+        'album_id',
+        'array_id_song',
     ];
-    public function songs()
-    {
-        return $this->belongsTo(Song::class,'song_id');
-    }
+    protected $casts = [
+        'array_id_song' => 'array',
+    ];
 }

@@ -30,6 +30,12 @@ class Song extends Model
         'isOffical' => 'boolean',
         'isPrivate' => 'boolean',
     ];
+
+    // public function getTypeSongAttribute()
+    // {
+    //     return 'song';
+    // }
+    
     public function artist()
     {
         return $this->belongsToMany(Artist::class, 'song_implementers', 'song_id', 'artist_id');

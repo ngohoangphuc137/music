@@ -435,6 +435,11 @@ class SongController extends Controller
     }
     public function testQueues(Request $request)
     {
+        // $file = $request->file('audio_file');
+        // $filePath = $file->store('temp');
+        // $audioFilePath = $request->file('audio_file')->store('temp', 'public');
+        // UploadMp3ToS3::dispatch($audioFilePath);
+
         $file = $request->file('file');
         $filePath = $file->store('temp');
         $audioFilePath = $request->file('file')->store('temp', 'public');

@@ -12,4 +12,7 @@ class AlbumArtist extends Model
         'album_id',
         'artist_id',
     ];
+    public function album(){
+        return $this->belongsTo(Album::class);
+    }
 }

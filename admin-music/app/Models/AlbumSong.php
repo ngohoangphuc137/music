@@ -13,7 +13,12 @@ class AlbumSong extends Model
         'song_id',
         'album_id',
     ];
-    public function songs(){
+    public function songs()
+    {
         return $this->hasMany(Song::class);
+    }
+    public function songBelongto()
+    {
+        return $this->belongsTo(Song::class,'song_id');
     }
 }

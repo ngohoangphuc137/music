@@ -21,6 +21,10 @@ class Album extends Model
     protected $casts = [
         'isAlbum' => 'boolean',
     ];
+    public function getTypeAlbumAttribute()
+    {
+        return 'album';
+    }
     public function albumArtists(){
         return $this->belongsToMany(Artist::class,'album_artists','album_id','artist_id');
     }
