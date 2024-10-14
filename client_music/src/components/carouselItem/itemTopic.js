@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom"
 import Icons from "../icons"
 import Album from "./itemAlbum"
-
+import { useMediaQuery } from 'react-responsive'
 const { GrNext } = Icons
 
 const ItemTopic = ({ data, flag }) => {
-
+    const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
     return (
         <div className="w-auto">
-            <div className="mt-6 flex items-center justify-between">
-                <h3 className="text-[22px] font-semibold">{data?.title}</h3>
+            <div className={`${maxW768 ? 'mt-3' : 'mt-6'} flex items-center justify-between`}>
+                <h3 className={`font-semibold ${maxW768 ? 'text-[17px]' : 'text-[22px]'}`}>{data?.title}</h3>
                 {flag
                     ?
                     <Link
@@ -19,10 +19,10 @@ const ItemTopic = ({ data, flag }) => {
                     </Link>
                     : ""}
             </div>
-            <div className="grid md:grid-cols-5" >
+            <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} >
                 {flag
                     ?
-                    (data?.item_Topic.filter((item, index) => index < 5).map(item => (
+                    (data?.item_Topic.filter((_, index) => (maxW768 ? index < 3 : index < 5)).map(item => (
                         <Album
                             key={item.id}
                             id={item.id}
@@ -31,6 +31,7 @@ const ItemTopic = ({ data, flag }) => {
                             thumbnail={item.thumbnail}
                             description={item.description}
                             isAlbum={item.isAlbum}
+                            userType={item.userType}
                         />
                     )))
                     :
@@ -43,6 +44,7 @@ const ItemTopic = ({ data, flag }) => {
                             thumbnail={item.thumbnail}
                             description={item.description}
                             isAlbum={item.isAlbum}
+                            userType={item.userType}
                         />
                     )))
                 }

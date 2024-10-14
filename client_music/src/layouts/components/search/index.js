@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import HeadlessTippy from "@tippyjs/react/headless";
 import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 import Icons from "~/components/icons";
 import WrapperSearch from "~/components/popper/wrapperSearch";
@@ -22,6 +23,7 @@ const Search = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const debounce = useDebounce(searchValue, 500);
+  const isSearch = useMediaQuery({ query: '(max-width:630px)' })
 
   const location = useLocation()
   useEffect(() => {
@@ -87,7 +89,7 @@ const Search = () => {
   }
 
   return (
-    <div className="relative w-[100%] max-w-[440px]">
+    <div className={`relative w-[100%] lg:max-w-[440px] sm:max-w-[400px] ${isSearch ? 'max-w-[300px] mr-1' : ''}`}>
       <HeadlessTippy
         interactive
         visible={showResult && searchResult.length > 0}
@@ -95,25 +97,27 @@ const Search = () => {
         placement="bottom"
         render={(attrs) => (
           <div className="" tabIndex="-1" {...attrs}>
-            <WrapperSearch>
-              <div className="font-bold px-[10px] pb-2 text-[14px]">
-                Gợi ý kết quả
-              </div>
-              {searchResult?.map((item, index) => (
-                <SearchItem
-                  key={index}
-                  data={item}
-                  setSearchResult={setSearchResult}
-                  setSearchValue={setSearchValue}
-                />
-              ))}
-            </WrapperSearch>
+            {!isSearch && (
+              <WrapperSearch>
+                <div className="font-bold px-[10px] pb-2 text-[14px]">
+                  Gợi ý kết quả
+                </div>
+                {searchResult?.map((item, index) => (
+                  <SearchItem
+                    key={index}
+                    data={item}
+                    setSearchResult={setSearchResult}
+                    setSearchValue={setSearchValue}
+                  />
+                ))}
+              </WrapperSearch>
+            )}
           </div>
         )}
         onClickOutside={hanldShowResult}
       >
         <div
-          className={`h-[40px] relative ${showResult && searchResult.length > 0
+          className={`h-[40px] relative ${showResult && searchResult.length > 0 && !isSearch
             ? "rounded-t-[20px] bg-[#34224f]"
             : "rounded-[20px] bg-active-bg"
             }`}
@@ -146,7 +150,7 @@ const Search = () => {
               />
             </button>
           )}
-          {loading && (
+          {loading && !isSearch && (
             <button className="absolute top-[10px] right-[10px] text-[#dadada]">
               <RiLoader2Line size={20} className="loaderSong" />
             </button>

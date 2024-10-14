@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import Icons from "../icons";
 
-const { FaPlay, RxDotsHorizontal, IoMdHeartEmpty, RiLoader2Line } = Icons;
+const { FaPlay, RiLoader2Line } = Icons;
 
 const SongItemSlideBarRight = ({
     id,
@@ -80,7 +80,7 @@ const SongItemSlideBarRight = ({
                             </h3>
                         </div>
                     </div>
-                    <div className="hover-items hidden group-hover:block">
+                    {/* <div className="hover-items hidden group-hover:block">
                         <div className="flex content-center">
                             <button className="font-normal p-[5.5px] rounded-[50%] hover:bg-active-bg">
                                 <IoMdHeartEmpty size={17} />
@@ -89,7 +89,7 @@ const SongItemSlideBarRight = ({
                                 <RxDotsHorizontal className="p-[0.8px] m-1" size={17} />
                             </button>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

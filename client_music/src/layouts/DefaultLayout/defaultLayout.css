@@ -154,7 +154,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.scroll-search::-webkit-scrollbar{
+
+.scroll-search::-webkit-scrollbar {
   width: 5px;
   height: 5px;
   padding: 10px 0;
@@ -171,6 +172,125 @@
   margin-block: .3em;
   margin: 13px 0;
 }
-.bg-imgCustom{
-  background-image: linear-gradient(90deg, transparent,hsla(0,0%,100%,0.1), transparent);
+
+.bg-imgCustom {
+  background-image: linear-gradient(90deg, transparent, hsla(0, 0%, 100%, 0.1), transparent);
+}
+
+.slider-bar::-webkit-slider-thumb {
+  border-radius: 50%;
+  appearance: none;
+  width: 0px;
+  height: 0px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.slider-bar:hover::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+}
+
+.volume::-webkit-slider-thumb {
+  border-radius: 50%;
+  appearance: none;
+  width: 0px;
+  height: 0px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.volume:hover::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+}
+
+.slick-slider .slick-track {
+  display: flex;
+  justify-content: flex-start;
+  /* Căn lề trái */
+}
+
+.slick-slide {
+  display: flex;
+  justify-content: flex-start;
+  /* Căn item về trái */
+}
+
+.custom-modal .ant-modal-content {
+  background-color: #34224f;
+  color: white;
+}
+
+.custom-modal .ant-modal-content .ant-modal-close {
+  color: white;
+}
+
+.custom-modal .ant-modal-header {
+  background-color: #34224f;
+  display: flex;
+  justify-content: center;
+}
+
+.custom-modal .ant-modal-header .ant-modal-title {
+  color: white;
+  font-size: 18px;
+}
+
+@media (max-width:600px) {
+  .zm-header::before {
+    height: 60px;
+  }
+
+  .zm-header {
+    height: 60px;
+  }
+}
+
+@media (max-width:780px) {
+  .thumnail-album-title {
+    width: 150px;
+    height: 150px;
+  }
+
+  .max678px {
+    margin-bottom: 0px;
+  }
+
+  .textAlbumGenre {
+    font-size: 20px;
+  }
+
+  .linkGenre {
+    font-size: 12.5px;
+  }
+  .linkGenre li{
+    margin: 0 16px;
+  }
+}
+
+.max678px {
+  margin-bottom: 28px;
+}
+
+@media (min-width:1000px) {
+  .textAlbumGenre {
+    font-size: 25px;
+  }
+
+  .linkGenre {
+    font-size: 14.5px;
+  }
+  .linkGenre li{
+    margin: 0 20px;
+  }
+}
+.left-slidebar{
+  left: -270px;
+}
+.left-slidebar0{
+  left: 0px;
+}
+.siderBarLeft{
+  transition: 0.3s ease;
 }

@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useNavigate, NavLink, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useMediaQuery } from 'react-responsive'
 
 import { menuSearch } from "~/utils/menu";
 import { loadingSearch } from "~/state/actions/search";
@@ -12,6 +13,7 @@ const PageSearch = () => {
   const dispatch = useDispatch();
   const [checkPath, setCheckpath] = useState(null)
   const [searchParams] = useSearchParams();
+  const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
 
   useEffect(() => {
     const locationSearch = location.pathname.split("/").filter(Boolean);
@@ -32,7 +34,7 @@ const PageSearch = () => {
     }
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [location]);
-  
+
   const handlCheckPath = (pathName) => {
     setCheckpath(pathName)
     if (pathName === checkPath) return
@@ -40,18 +42,18 @@ const PageSearch = () => {
   }
 
   return (
-    <div className="mt-[60px] px-[59px] absolute inset-0">
-      <div className="text-[#fff] pt-5">
-        <div className="border-b-[1px] border-[hsla(0,0%,100%,0.1)] mx-[calc(59px*-1)] pl-[59px] mb-7">
+    <div className={`lg:px-[59px] sm:px-[20px] min-[300px]:px-3 ${maxW768 ? 'relative h-[calc(100vh-135px-60px)]' : 'absolute lg:mt-[60px] sm:mt-[30px] min-[300px]:mt-[30px]'} inset-0`}>
+      <div className={`text-[#fff] ${maxW768 ? 'pt-0' : 'pt-5'}`}>
+        <div className={`border-b-[1px] border-[hsla(0,0%,100%,0.1)] mx-[calc(59px*-1)] pl-[59px] ${maxW768 ? 'mb-0' : 'mb-7'}`}>
           <div className="flex items-center min-h-[32px]">
-            <h3 className="text-[25px] font-semibold m-0 pr-5 border-r-[1px] border-[hsla(0,0%,100%,0.1)] leading-normal">
-              Kết quả tìm kiếm
+            <h3 className={`${maxW768 ? 'text-[15px] pr-2' : 'text-[25px] pr-5'} font-semibold m-0  border-r-[1px] border-[hsla(0,0%,100%,0.1)] leading-normal`}>
+              Search
             </h3>
-            <ul className="flex items-center flex-wrap text-[14.5px] font-medium">
+            <ul className={`flex items-center flex-wrap ${maxW768 ? 'text-[11px]' : 'text-[14.5px]'} font-medium`}>
               {menuSearch.map((item, index) => (
                 <li
                   key={index}
-                  className="flex items-center justify-center uppercase relative text-[#dadada] mx-[20px] leading-normal	"
+                  className={`flex items-center justify-center uppercase relative text-[#dadada] ${maxW768 ? 'mx-[10px]' : 'mx-[20px]'} leading-normal`}
                 >
                   <NavLink
                     onClick={() => handlCheckPath(item.path)}

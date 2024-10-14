@@ -2,10 +2,10 @@ import { memo } from "react";
 
 import SelectItem from "~/components/carouselItem/selectItem"
 import hocSong from "~/components/HOC/hocSong";
+import { useMediaQuery } from 'react-responsive'
 
-
-const TableListSong = ({ playList, isSong = false, Context }) => {
-
+const TableListSong = ({ playList, isSong = false, Context, handlRemoveToPlatlist }) => {
+  const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
   return (
     <>
       <div>
@@ -20,7 +20,7 @@ const TableListSong = ({ playList, isSong = false, Context }) => {
             </div>
             <div className="flex-auto flex-shrink flex-grow text-left self-center w-0 ml-[-10px]">
               <div>
-                <div className="text-[14px] font-medium text-[hsla(0,0%,100%,0.5)]">
+                <div className={`text-[14px] font-medium text-[hsla(0,0%,100%,0.5)] ${maxW768 ? 'hidden' : ''}`}>
                   {!isSong && !playList?.isAlbum ? "Album" : ""}
                 </div>
               </div>
@@ -38,9 +38,10 @@ const TableListSong = ({ playList, isSong = false, Context }) => {
             {!isSong
               ? (playList?.song.map((item) => (
                 <SelectItem
-                  key={item.id}
-                  id={item.id}
+                  key={item?.id}
+                  id={item?.id}
                   isLuMusic={true}
+                  idPlaylist={playList?.id}
                   album={item.album}
                   name={item.name}
                   thumbnail={item.thumbnail}
@@ -53,12 +54,15 @@ const TableListSong = ({ playList, isSong = false, Context }) => {
                   totalFavourited={item.totalFavourited}
                   isAlbum={playList?.isAlbum}
                   Themecontext={Context}
+                  handlRemoveToPlatlist={handlRemoveToPlatlist}
                 />
               )))
               : (<SelectItem
+                key={playList?.id}
                 id={playList?.id}
                 isLuMusic={true}
                 album={playList?.album}
+                idPlaylist={playList?.id}
                 name={playList?.name}
                 thumbnail={playList?.thumbnail}
                 thumbnailAlbum={playList?.album?.thumbnail}
@@ -70,6 +74,7 @@ const TableListSong = ({ playList, isSong = false, Context }) => {
                 totalFavourited={playList?.totalFavourited}
                 isAlbum={playList?.album?.isAlbum}
                 Themecontext={Context}
+                handlRemoveToPlatlist={handlRemoveToPlatlist}
               />)
             }
           </div>
@@ -78,4 +83,4 @@ const TableListSong = ({ playList, isSong = false, Context }) => {
     </>
   )
 }
-export default hocSong(memo(TableListSong), true,'ALBUM')
+export default hocSong(memo(TableListSong), true, 'ALBUM')

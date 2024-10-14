@@ -1,9 +1,13 @@
-import { memo } from "react";
 import Icons from "../icons";
 import Button from "../button";
 import Tippy from "@tippyjs/react/headless";
 import "tippy.js/dist/tippy.css"; // optional
 import InformationSong from "../itemInformation/informationSong";
+import InfomationPlaylist from "../itemInformation/infomationPlaylist";
+import { useSelector } from "react-redux";
+import { addToPlaylistServicer } from "~/services/authServicer";
+import { toast } from "react-toastify";
+
 const {
     IoMdHeartEmpty,
     SlEarphones,
@@ -12,8 +16,20 @@ const {
     IoAddCircleOutline,
     GrNext,
 } = Icons;
-const ItemSeemore = ({ id, name, image,artist,album, genre,composers,totalListens, totalFavourited }) => {
+const ItemSeemore = ({ id, name, image, artist, album, genre, composers, totalListens, totalFavourited }) => {
     
+    const { bearer_token } = useSelector(
+        (state) => state.user
+    );
+
+    const handAddToPlaylist = async(idPlaylist)=>{
+        const add = await addToPlaylistServicer(bearer_token,idPlaylist,id)
+        if(add.data.status === 200){
+            toast.success(`Đã thêm bài hát ${name} vào playlist thành công`)
+        }else{
+            toast.error(`Đã có lỗi sảy ra trong quá trình thêm`)
+        }
+    }
     return (
         <div className="w-[250px] h-auto bg-[#34224f] rounded-[8px]">
             <ul>
@@ -59,10 +75,10 @@ const ItemSeemore = ({ id, name, image,artist,album, genre,composers,totalListen
                     trigger='mouseenter'
                     appendTo='parent'
                     placement='auto'
-                    offset={[-15,0]}
+                    offset={[-15, 0]}
                     render={attrs => (
                         <div className="w-auto" tabIndex="-1" {...attrs}>
-                            <InformationSong album={null} composers={composers} genre={genre} artist={artist}/>
+                            <InformationSong album={null} composers={composers} genre={genre} artist={artist} />
                         </div>
                     )}
                 >
@@ -77,15 +93,29 @@ const ItemSeemore = ({ id, name, image,artist,album, genre,composers,totalListen
                 <li className="hover:bg-border-player text-[#fff]">
                     <Button value={"Thêm vào thư viện"} icon={<IoMdHeartEmpty />} />
                 </li>
-                <li className="hover:bg-border-player text-[#fff]">
-                    <Button
-                        value={"Thêm vào playlist"}
-                        icon={<IoAddCircleOutline />}
-                        iconNext={<GrNext />}
-                    />
-                </li>
+                <Tippy
+                    interactive='true'
+                    hideOnClick='false'
+                    trigger='mouseenter'
+                    appendTo='parent'
+                    placement='auto'
+                    offset={[-15, 0]}
+                    render={attrs => (
+                        <div className="w-auto" tabIndex="-1" {...attrs}>
+                             {bearer_token !== null && (<InfomationPlaylist handAddToPlaylist={handAddToPlaylist} />)}
+                        </div>
+                    )}
+                >
+                    <li className="hover:bg-border-player text-[#fff]">
+                        <Button
+                            value={"Thêm vào playlist"}
+                            icon={<IoAddCircleOutline />}
+                            iconNext={bearer_token !== null ? <GrNext /> : ""}
+                        />
+                    </li>
+                </Tippy>
             </ul>
         </div>
     );
 };
-export default memo(ItemSeemore);
+export default ItemSeemore;

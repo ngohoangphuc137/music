@@ -4,6 +4,7 @@ import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useMediaQuery } from 'react-responsive'
 
 import Album from "~/components/carouselItem/itemAlbum";
 import { genre, albumGenre } from "~/services/genreAlbumServicer";
@@ -28,6 +29,7 @@ const GenreAlbum = () => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setloading] = useState(false);
   const { id } = useParams();
+  const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
 
   useEffect(() => {
     const fetchApi = async () => {
@@ -85,28 +87,29 @@ const GenreAlbum = () => {
   };
 
   return (
-    <div>
+    <div className="overflow-y-auto">
       <InfiniteScroll
         dataLength={albums.length}
-        loader={<div className="grid md:grid-cols-5" ><PlayListSkeleton count={10} /></div>}
+        loader={<div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} ><PlayListSkeleton count={10} /></div>}
         hasMore={hasMore && albums.length !== total}
         next={fetchData}
-        style={{ height: "calc(100vh-85px)" }}
+        style={{ height: "calc(100vh-85px)",overflowX:'hidden' }}
         height={"calc(100vh-85px)"}
-        className="mt-[70px] px-[59px] absolute inset-0 main-page"
+        className={` lg:px-[59px] sm:px-[20px] min-[300px]:px-3 
+           ${maxW768 ? 'relative h-[calc(100vh-135px-60px)]' : 'absolute lg:mt-[70px] sm:mt-[45px] min-[300px]:mt-[45px]'} inset-0 main-page`}
       >
         <div className="">
           <div className="text-[#fff] pt-2">
             <div className="border-b-[1px] border-[hsla(0,0%,100%,0.1)] mx-[calc(59px*-1)] pl-[59px] mb-7">
               <div className="flex items-center min-h-[32px]">
-                <h3 className="text-[25px] font-semibold m-0 pr-5 border-r-[1px] border-[hsla(0,0%,100%,0.1)] leading-normal">
+                <h3 className="textAlbumGenre  font-semibold m-0 pr-5 border-r-[1px] border-[hsla(0,0%,100%,0.1)] leading-normal">
                   ALBUM
                 </h3>
-                <ul className="flex items-center flex-wrap text-[14.5px] font-medium">
+                <ul className="flex items-center flex-wrap linkGenre font-medium">
                   {genre_parent?.map((item) => (
                     <li
                       key={item.id}
-                      className="flex items-center justify-center uppercase relative text-[#dadada] mx-[20px] leading-normal"
+                      className="flex items-center justify-center uppercase relative text-[#dadada] leading-normal"
                     >
                       <span
                         onClick={() => handlNavigate(item.id, item.alias)}
@@ -172,7 +175,7 @@ const GenreAlbum = () => {
               )}
 
               <div>
-                <div className="grid md:grid-cols-5">      
+                <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`}>
                   {loading && (albums?.map((item) => (
                     <Album
                       key={item.id}
@@ -185,8 +188,8 @@ const GenreAlbum = () => {
                       artist={item.artist}
                     />
                   )))}
-                  {!loading && <PlayListSkeleton count={23} />}
                 </div>
+                {!loading && <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} ><PlayListSkeleton count={10} /></div>}
               </div>
             </div>
           </div>

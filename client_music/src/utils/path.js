@@ -1,7 +1,10 @@
 const path = {
- HOME:"",
- MY_MUSIC:"mymusic",
+ HOME:"/",
+ MY_MUSIC:"/mymusic",
+ LIBARY_PLAYLIST:'/mymusic/libary/playlist',
+ LIBARY_ARTIST:'/mymusic/libary/artist',
  ALBUM:'album/:title/:id',
+ PLAYLIST:'playlist/:title/:id',
  SONG:'bai-hat/:title/:id',
  MUSIC_FAVORITES:'BXH-nha-yeu-thich',
  ARTIST:'nghe-si/:alias',

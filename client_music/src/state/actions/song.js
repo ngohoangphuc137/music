@@ -46,3 +46,19 @@ export const setTemporaryDataRight = (data)=>({
     type:actionType.SET_TEMPORART_DATA_RIGHT,
     data
 })
+export const setSongChanged = (data)=>({
+    type:actionType.SET_SONG_CHANGED,
+    data
+})
+export const setIsShuffle = (value)=>({
+    type:actionType.SET_IS_SHUFFLE,
+    value
+})
+export const setIsRepeat = (value)=>({
+    type:actionType.SET_IS_REPEAT,
+    value
+})
+export const setRecentlyHeard = (data)=>({
+    type:actionType.SET_DATASONG_RECENTLY_HEARD,
+    data
+})

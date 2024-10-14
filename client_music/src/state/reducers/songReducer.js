@@ -1,9 +1,9 @@
 import actionType from "../actions/actionType"
 const initState = {
     currunSongId: null,
-    musicSection:{
-        idSection:null,
-        section:null
+    musicSection: {
+        idSection: null,
+        section: null
     },
     TITLE_KEY: {
         title: null,
@@ -11,14 +11,19 @@ const initState = {
     },
     songInfo: null,
     isPlay: false,
+    songChanged: false,
     loader: false,
     isSbarRight: false,
     songDataSlideBarRight: [],
-    temporaryDataRight:[],
+    temporaryDataRight: [],
     listStateSong: {
         pre: null,
         next: null
-    }
+    },
+    isShuffle: false,
+    isRepeat: false,
+    dataSlideRightShuffle: [],
+    dataSongRecentlyHeard: [],
 }
 const SongReducer = (state = initState, action) => {
     switch (action.type) {
@@ -40,9 +45,9 @@ const SongReducer = (state = initState, action) => {
         case actionType.SET_SECTION:
             return {
                 ...state,
-                musicSection:{
-                    idSection:action.id,
-                    section:action.name 
+                musicSection: {
+                    idSection: action.id,
+                    section: action.name
                 }
             }
         case actionType.SET_INFO_SONG:
@@ -77,9 +82,37 @@ const SongReducer = (state = initState, action) => {
                 }
             }
         case actionType.SET_TEMPORART_DATA_RIGHT:
-            return{
+            return {
                 ...state,
-                temporaryDataRight:action.data
+                temporaryDataRight: action.data
+            }
+        case actionType.SET_SONG_CHANGED:
+            return {
+                ...state,
+                songChanged: action.data
+            }
+        case actionType.SET_IS_SHUFFLE:
+            return {
+                ...state,
+                isShuffle: action.value
+            }
+        case actionType.SET_IS_REPEAT:
+            return {
+                ...state,
+                isRepeat: action.value
+            }
+        case actionType.SET_DATASONG_RECENTLY_HEARD:
+            let newDataRecenlty = [...state.dataSongRecentlyHeard]
+            const checkDulicate = state.dataSongRecentlyHeard.some(item => item.id === action.data.id)
+            if (!checkDulicate) {
+                newDataRecenlty = [action.data, ...newDataRecenlty]
+            }
+            if (newDataRecenlty.length >= 10) {
+                newDataRecenlty.pop()
+            }
+            return {
+                ...state,
+                dataSongRecentlyHeard: newDataRecenlty
             }
         default:
             return state

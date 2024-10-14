@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
+import { useMediaQuery } from 'react-responsive'
 
 import InfiniteScroll from "react-infinite-scroll-component"
 import Icons from "~/components/icons"
@@ -17,6 +18,7 @@ const ArtistListAlbum = () => {
     const [hasMore, setHasMore] = useState(true)
     const [loading, setloading] = useState(false);
     const type = 'album';
+    const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
     useEffect(() => {
         const listAlbum = async () => {
             const response = await ListSongArtist(infoArtist.idArtist, type, page)
@@ -30,14 +32,14 @@ const ArtistListAlbum = () => {
         listAlbum()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    console.log(albums);
+
     const fetchData = () => {
         if (albums.length < total) {
             setPage(page + 1)
             const listSong = async () => {
                 const response = await ListSongArtist(infoArtist.idArtist, 'song', page);
                 if (response.status === 200) {
-                    setAlbums(...albums.response.data.data.item)
+                    setAlbums(albums.concat(response.data.data.item))
                 }
             }
             listSong()
@@ -53,26 +55,28 @@ const ArtistListAlbum = () => {
             <InfiniteScroll
                 dataLength={10}
                 next={fetchData}
-                hasMore={albums?.length === total ? false : hasMore }
-                className="mt-[70px] px-[59px] absolute inset-0 main-page"
-                loader={<div className="grid md:grid-cols-5"  ><PlayListSkeleton count={10} /></div>}
+                hasMore={albums?.length === total ? false : hasMore}
+                className={`lg:px-[59px] sm:px-[20px] min-[300px]:px-3 ${maxW768 ? 'relative h-[calc(100vh-135px-60px)]' : 'absolute lg:mt-[70px] sm:mt-[45px] min-[300px]:mt-[45px]'} inset-0 main-page`}
+                loader={<div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`}  ><PlayListSkeleton count={10} /></div>}
                 style={{ height: 'calc(100vh-85px)' }}
                 height={'100vh'}
             >
-                <div className="px-[59px] inset-0">
-                    <div className="text-[#ffff] pt-3"> 
+                <div className="inset-0">
+                    <div className="text-[#ffff] pt-3">
                         <div className="w-auto mb-3">
-                            <div className="title text-[20px] font-bold leading-normal flex items-center">
+                            <div className={`title ${maxW768 ? 'text-[17px]' : 'text-[20px]'} font-bold leading-normal flex items-center`}>
                                 <h3>{infoArtist.nameArtist}</h3>
                                 <MdHorizontalRule size={20} className="px-[2px] mx-1" />
                                 <span>Tất cả bài hát</span>
-                                <button className="ml-3 w-10 h-10 flex items-center justify-center">
-                                    <IoPlayCircleSharp size={40} />
-                                </button>
+                                {!maxW768 && (
+                                    <button className="ml-3 w-10 h-10 flex items-center justify-center">
+                                        <IoPlayCircleSharp size={40} />
+                                    </button>
+                                )}
                             </div>
                         </div>
 
-                        <div className="grid md:grid-cols-5" >
+                        <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} >
                             {loading && (
                                 albums?.map(item => (
                                     <Album
@@ -86,8 +90,8 @@ const ArtistListAlbum = () => {
                                     />
                                 ))
                             )}
-                            {!loading && <PlayListSkeleton count={23} />}
                         </div>
+                        {!loading && <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} ><PlayListSkeleton count={10} /></div>}
                     </div >
                 </div>
             </InfiniteScroll>

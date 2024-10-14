@@ -19,7 +19,7 @@ const SearchSong = ({ data, Context }) => {
     dispatch(searchType(searchParams.get("q"), "song"));
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [searchParams.get("q")]);
-  console.log(loadingSearch);
+
   return (
     <>
       {!loadingSearch && (<SongSkeleton count={13} />)}
@@ -28,8 +28,8 @@ const SearchSong = ({ data, Context }) => {
           {dataSearch?.length <= 0 && <NoSearchData Icon={<LuMusic className="text-6xl" />} text={'Không có Bài Hát được tìm thấy'} />}
           {dataSearch?.length > 0 && (
             <div>
-              <div className="w-auto mt-7">
-                <h3 className="relative mb-6 flex items-center text-[22px] font-semibold text-[#fff] leading-normal">
+              <div className="w-auto mt-5">
+                <h3 className="relative mb-2 flex items-center text-[22px] font-semibold text-[#fff] leading-normal">
                   Bài hát
                 </h3>
                 <div className="grid md:grid-cols-1">

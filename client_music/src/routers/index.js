@@ -15,6 +15,9 @@ import SearchSong from "~/pages/search/searchSong";
 import SearchPlaylist from "~/pages/search/searchPlaylist";
 import SearchArtist from "~/pages/search/searchArtist";
 import GenreAlbum from "~/pages/genreAlbum";
+import LibaryPlaylist from "~/pages/library/libaryPlaylist";
+import LibaryArtist from "~/pages/library/libaryArtist";
+import Playlist from "~/pages/playlist";
 
 // Public Route
 const PublicRoutes = [
@@ -37,7 +40,10 @@ const PublicRoutes = [
             {path: path.SEARCH_ARTIST ,component:SearchArtist},
         ]
     },
-    { path: path.GENRE_ALBUMS, component: GenreAlbum },
+    { path: path.GENRE_ALBUMS, component:GenreAlbum },
+    { path: path.LIBARY_PLAYLIST, component:LibaryPlaylist },
+    { path: path.LIBARY_ARTIST, component:LibaryArtist },
+    { path: path.PLAYLIST, component:Playlist },
 ];
 
 export { PublicRoutes };

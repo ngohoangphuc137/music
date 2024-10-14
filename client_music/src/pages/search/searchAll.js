@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useLocation } from "react-router-dom";
+import { useMediaQuery } from 'react-responsive'
 
 import { searchType } from "~/state/actions/search";
 import SelectItem from "~/components/carouselItem/selectItem";
@@ -20,6 +21,7 @@ const SearchAll = ({ Context }) => {
   const dispatch = useDispatch();
   const { dataSearch, loadingSearch } = useSelector((state) => state.search);
   const [searchParams] = useSearchParams();
+  const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
 
   useEffect(() => {
     dispatch(searchType(searchParams.get("q"), type));
@@ -34,9 +36,9 @@ const SearchAll = ({ Context }) => {
           <div className="animate-pulse mb-1 w-[300px] h-[30px] rounded bg-[hsla(0,0%,100%,0.1)]"></div>
           <SongSkeleton count={5} />
           <div className="animate-pulse mb-1 mt-4 w-[300px] h-[30px] rounded bg-[hsla(0,0%,100%,0.1)]"></div>
-          <div className="grid md:grid-cols-5" ><PlayListSkeleton count={5} /></div>
+          <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} ><PlayListSkeleton count={5} /></div>
           <div className="animate-pulse mb-1 mt-4 w-[300px] h-[30px] rounded bg-[hsla(0,0%,100%,0.1)]"></div>
-          <div className="grid md:grid-cols-5" ><PlayListSkeleton count={5} /></div>
+          <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} ><PlayListSkeleton count={5} /></div>
         </>
       )}
 
@@ -45,9 +47,9 @@ const SearchAll = ({ Context }) => {
           {dataSearch?.artists?.length <= 0 && dataSearch?.songs?.length <= 0 && dataSearch?.playlists?.length <= 0 && (<NoSearchData Icon={<RiDiscLine className="text-6xl" />} text={'Không có kết quả được tìm thấy'} />)}
           <div>
             {dataSearch?.songs?.length > 0 && (
-              <div className="w-auto mt-7">
+              <div className="w-auto mt-5">
 
-                <h3 className="relative mb-6 flex items-center text-[22px] font-semibold text-[#fff] leading-normal">
+                <h3 className="relative flex items-center text-[22px] font-semibold text-[#fff] leading-normal">
                   Bài hát
                 </h3>
                 <div className="grid md:grid-cols-1 lg:grid-cols-2">
@@ -80,9 +82,9 @@ const SearchAll = ({ Context }) => {
                 <h3 className="relative mb-6 flex items-center text-[22px] font-semibold text-[#fff] leading-normal">
                   Playlist/Album
                 </h3>
-                <div className="grid md:grid-cols-4 lg:grid-cols-5">
+                <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`}>
                   {dataSearch?.playlists
-                    ?.filter((item, index) => index < 5)
+                    ?.filter((_, index) => index < 5)
                     .map((item, index) => (
                       <Album
                         key={index}
@@ -93,6 +95,7 @@ const SearchAll = ({ Context }) => {
                         description={item.description}
                         isAlbum={item.isAlbum}
                         artist={item.artist}
+                        userType={item.userType}
                       />
                     ))}
                 </div>
@@ -103,9 +106,9 @@ const SearchAll = ({ Context }) => {
                 <h3 className="relative mb-6 flex items-center text-[22px] font-semibold text-[#fff] leading-normal">
                   Nghệ sĩ
                 </h3>
-                <div className="flex">
+                <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`}>
                   {dataSearch?.artists
-                    ?.filter((item, index) => index < 5)
+                    ?.filter((_, index) => (maxW768 ? index < 3 : index < 5))
                     .map((item, index) => (
                       <ArtistItem
                         key={index}

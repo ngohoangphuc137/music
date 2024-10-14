@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useMediaQuery } from 'react-responsive'
 
 import { searchType } from "~/state/actions/search";
 import ArtistItem from "~/components/carouselItem/artistItem";
@@ -14,6 +15,7 @@ const SearchArtist = () => {
     const type = "artist";
     const dispatch = useDispatch();
     const { dataSearch, loadingSearch } = useSelector((state) => state.search);
+    const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
     const [searchParams] = useSearchParams();
 
     useEffect(() => {
@@ -22,16 +24,16 @@ const SearchArtist = () => {
     }, [searchParams.get("q")]);
     return (
         <>
-            {!loadingSearch && (<div className="flex flex-wrap" ><ArtistSkeleton count={13} /></div>)}
+            {!loadingSearch && (<div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} ><ArtistSkeleton count={10} /></div>)}
             {loadingSearch && (
                 <>
                     {dataSearch?.length <= 0 && <NoSearchData Icon={<GiMicrophone className="text-6xl" />} text={'Không có Nghệ sĩ được tìm thấy'} />}
                     {dataSearch?.length > 0 && (
-                        <div className="w-auto mt-7">
+                        <div className="w-auto mt-5">
                             <h3 className="relative mb-6 flex items-center text-[22px] font-semibold text-[#fff] leading-normal">
                                 Nghệ sĩ
                             </h3>
-                            <div className="flex flex-wrap">
+                            <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`}>
 
                                 {dataSearch?.map((item, index) => (
                                     <ArtistItem

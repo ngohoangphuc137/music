@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useMediaQuery } from 'react-responsive'
 
 import { searchType } from "~/state/actions/search";
 import Album from "~/components/carouselItem/itemAlbum";
@@ -12,6 +13,7 @@ const { RiDiscLine } = Icons
 
 const SearchPlaylist = () => {
   const { dataSearch, loadingSearch } = useSelector((state) => state.search);
+  const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   useEffect(() => {
@@ -21,7 +23,7 @@ const SearchPlaylist = () => {
 
   return (
     <>
-      {!loadingSearch && <div className="grid md:grid-cols-5" ><PlayListSkeleton count={20} /></div>}
+      {!loadingSearch && <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`} ><PlayListSkeleton count={20} /></div>}
       {loadingSearch && (
         <>
           {dataSearch?.length <= 0 && <NoSearchData Icon={<RiDiscLine className="text-6xl" />} text={'Không có Playlist/Album được tìm thấy'} />}
@@ -31,7 +33,7 @@ const SearchPlaylist = () => {
                 <h3 className="relative flex items-center text-[22px] font-semibold text-[#fff] leading-normal">
                   Playlist/Album
                 </h3>
-                <div className="grid md:grid-cols-4 lg:grid-cols-5">
+                <div className={`grid ${maxW768 ? 'grid-cols-3' : 'md:grid-cols-5'}`}>
                   {dataSearch?.map((item, index) => (
                     <Album
                       key={index}
@@ -42,6 +44,7 @@ const SearchPlaylist = () => {
                       description={item.description}
                       isAlbum={item.isAlbum}
                       artist={item.artist}
+                      userType={item.userType}
                     />
                   ))}
 

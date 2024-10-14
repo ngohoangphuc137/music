@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux"
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useMediaQuery } from 'react-responsive'
 
 import Icons from "~/components/icons";
 import SelectItem from "~/components/carouselItem/selectItem";
 import { ListSongArtist } from "~/services/artistServicer";
 import hocSong from "~/components/HOC/hocSong";
 import { setTemporaryDataRight } from "~/state/actions/song";
+import SongSkeleton from "~/components/skeleton/songSkeleton";
 
 const { IoPlayCircleSharp, MdHorizontalRule } = Icons
 
-const ArtistListSong = ({Context}) => {
-    const type='song'
+const ArtistListSong = ({ Context }) => {
+    const type = 'song'
     const { infoArtist } = useSelector(state => state.artist)
     const dispatch = useDispatch();
     const [songs, setSongs] = useState([]);
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
     const [hasMore, setHasMore] = useState(true)
+    const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
     useEffect(() => {
         const listSong = async () => {
             const response = await ListSongArtist(infoArtist.idArtist, type, page)
@@ -29,7 +32,6 @@ const ArtistListSong = ({Context}) => {
             }
         }
         listSong()
-        
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -51,27 +53,28 @@ const ArtistListSong = ({Context}) => {
 
     return (
         <>
-            <main className="flex-1">
+            <div>
                 <InfiniteScroll
                     dataLength={songs.length}
                     next={fetchData}
                     hasMore={hasMore}
-                    className="main-page relative flex-1 overflow-y-auto overflow-hidden scrollbar-hidden z-[90] h-[calc(100vh-85px)]"
-                    loader={<h4>Loading...</h4>}
+                    className={`lg:px-[59px] sm:px-[20px]  min-[300px]:px-3  ${maxW768 ? 'relative h-[calc(100vh-135px-60px)]' : 'absolute lg:mt-[70px] sm:mt-[45px] min-[300px]:mt-[45px]'} inset-0 main-page`}
+                    loader={<SongSkeleton count={6} />}
                     style={{ height: 'calc(100vh-85px)' }}
                     height={'100vh'}
                 >
-      
-                    <div className="px-[59px] inset-0">
+                    <div className="inset-0">
                         <div className="text-[#ffff] pt-3">
-                            <div className="w-auto mb-7">
-                                <div className="title text-[20px] font-bold leading-normal flex items-center">
+                            <div className="w-auto mb-7 max-[768px]:mb-2">
+                                <div className={`title ${maxW768 ? 'text-[17px]' : 'text-[20px]'} font-bold leading-normal flex items-center`}>
                                     <h3>{infoArtist.nameArtist}</h3>
                                     <MdHorizontalRule size={20} className="px-[2px] mx-1" />
                                     <span>Tất cả bài hát</span>
-                                    <button className="ml-3 w-10 h-10 flex items-center justify-center">
-                                        <IoPlayCircleSharp size={40} />
-                                    </button>
+                                    {!maxW768 && (
+                                        <button className="ml-3 w-10 h-10 flex items-center justify-center">
+                                            <IoPlayCircleSharp size={40} />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 
@@ -99,8 +102,8 @@ const ArtistListSong = ({Context}) => {
                         </div >
                     </div>
                 </InfiniteScroll>
-            </main>
+            </div>
         </>
     )
 }
-export default hocSong(ArtistListSong,true,'ARTIST_SONGS')
+export default hocSong(ArtistListSong, true, 'ARTIST_SONGS')

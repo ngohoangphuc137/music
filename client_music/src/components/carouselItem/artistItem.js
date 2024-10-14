@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
+import { useMediaQuery } from 'react-responsive'
 
 import Icons from "../icons";
 import { formatter } from "~/utils/numberFormat";
 
 const { PiShuffle, TbUserPlus } = Icons;
 
-const ArtistItem = ({id,name,alias,thumbnail,totalFollow}) => {
+const ArtistItem = ({ id, name, alias, thumbnail, totalFollow, isButtonFollow = false }) => {
+    const maxW768 = useMediaQuery({ query: '(max-width:768px)' })
     return (
         <div className="lg:w-[20%] relative group px-4 min-h-[1px] float-left mb-7">
             <div className="w-full text-center">
@@ -29,7 +31,7 @@ const ArtistItem = ({id,name,alias,thumbnail,totalFollow}) => {
                     </div>
                 </div>
                 <div className="min-h-12">
-                    <div className="text-[16px] font-medium leading-tight text-[#fff] overflow-hidden text-ellipsis">
+                    <div className={`${maxW768 ? 'text-[13.5px]' : 'text-[16px]'} font-medium leading-tight text-[#fff] overflow-hidden text-ellipsis`}>
                         <Link to={`/nghe-si/${alias}`} className="hover:underline hover:text-[#c273ed] mt-4 whitespace-normal overflow-hidden text-ellipsis block transform-none leading-6">
                             {name}
                         </Link>
@@ -38,13 +40,16 @@ const ArtistItem = ({id,name,alias,thumbnail,totalFollow}) => {
                         <span>{formatter.format(totalFollow)} quan tâm</span>
                     </div>
                 </div>
-                <div>
-                    <button
-                        className="bg-[#9b4de0] uppercase border-[#9b4de0] text-white rounded-full leading-normal text-center m-auto mt-4 mb-5 flex justify-center items-center text-[13px] py-[6px] px-[29px]" >
-                        <TbUserPlus size={16} className="mr-[5px]" />
-                        <span>Quan tâm</span>
-                    </button>
-                </div>
+                {!isButtonFollow && (
+                    <div>
+                        <button
+                            className={`bg-[#9b4de0] uppercase border-[#9b4de0] text-white rounded-full leading-normal 
+                            text-center m-auto mt-4 mb-5 flex justify-center items-center ${maxW768 ? 'text-[9px] py-[6px] px-[12px]' : 'text-[13px] py-[6px] px-[29px]'}`} >
+                            <TbUserPlus size={16} className="mr-[5px]" />
+                            <span >Quan tâm</span>
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
